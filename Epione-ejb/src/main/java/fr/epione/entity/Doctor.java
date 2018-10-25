@@ -27,7 +27,7 @@ public class Doctor extends User implements Serializable {
 	private String presentation;
 	@Embedded
 	private Adresse adresse;
-
+	
 	@OneToMany
 	private List<MotifDoctor> listMotifs = new ArrayList<>();
 	@OneToMany
@@ -126,4 +126,7 @@ public class Doctor extends User implements Serializable {
 		this.tarifs = tarifs;
 	}
 
+
+
+	
 }
