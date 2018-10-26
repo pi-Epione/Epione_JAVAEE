@@ -30,6 +30,7 @@ public class Doctor extends User implements Serializable {
 	@Embedded
 	private Adresse adresse;
 
+
 	@OneToMany(fetch=FetchType.EAGER)
 	private List<MotifDoctor> listMotifs = new ArrayList<>();
 	@OneToMany
@@ -130,4 +131,7 @@ public class Doctor extends User implements Serializable {
 		this.tarifs = tarifs;
 	}
 
+
+
+	
 }
