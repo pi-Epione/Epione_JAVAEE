@@ -28,7 +28,7 @@ public class RendezVous implements Serializable{
 	private String reason;
 	@Enumerated(EnumType.STRING)
 	private State state;
-	private int order;
+	private int ordreAttente;
 	
 	@ManyToOne
 	private Patient patient ;
@@ -47,12 +47,7 @@ public class RendezVous implements Serializable{
 		this.etat = etat;
 		this.patient = patient;
 	}
-	public int getIdentifiant() {
-		return id;
-	}
-	public void setIdentifiant(int identifiant) {
-		this.id = identifiant;
-	}
+
 	public Date getDate() {
 		return date;
 	}
@@ -109,11 +104,20 @@ public class RendezVous implements Serializable{
 	public void setState(State state) {
 		this.state = state;
 	}
-	public int getOrder() {
-		return order;
+	
+	public int getId() {
+		return id;
 	}
-	public void setOrder(int order) {
-		this.order = order;
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+
+	public int getOrdreAttente() {
+		return ordreAttente;
+	}
+	public void setOrdreAttente(int ordreAttente) {
+		this.ordreAttente = ordreAttente;
 	}
 	@Override
 	public String toString() {

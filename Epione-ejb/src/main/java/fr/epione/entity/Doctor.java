@@ -2,7 +2,9 @@ package fr.epione.entity;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,7 +30,7 @@ public class Doctor extends User implements Serializable {
 	@Embedded
 	private Adresse adresse;
 
-	@OneToMany
+	@OneToMany(fetch=FetchType.EAGER)
 	private List<MotifDoctor> listMotifs = new ArrayList<>();
 	@OneToMany
 	private List<LangueDoctor> langues = new ArrayList<>();
@@ -38,6 +40,8 @@ public class Doctor extends User implements Serializable {
 	private List<FormationDoctor> formations = new ArrayList<>();
 	@OneToMany
 	private List<TarifDoctor> tarifs = new ArrayList<>();
+	@OneToOne(mappedBy="doctor")
+	private Calendrier calendrier;
 
 	// ******************** M ***********************///
 	

@@ -35,6 +35,7 @@ public abstract class User implements Serializable{
 	private Date dateCreation;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastConnect;
+	
 		
 	public User(){}
 	public int getId() {
@@ -110,6 +111,7 @@ public abstract class User implements Serializable{
 		this.lastConnect = lastConnect;
 	}
 	
+
 	public User(String lastName, String firstName, String email, int phoneNumber, Date birthDay, String password){
 		this.lastName=lastName;
 		this.firstName=firstName;

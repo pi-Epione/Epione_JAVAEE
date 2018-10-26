@@ -3,6 +3,7 @@ package fr.epione.utils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -66,6 +67,9 @@ public class Utils {
 			return null;
 		return listError;
 
+	}
+	public static void initialCalendar(Date date){
+		
 	}
 
 }
