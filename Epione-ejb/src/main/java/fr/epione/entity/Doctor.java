@@ -1,5 +1,7 @@
 package fr.epione.entity;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,9 +28,11 @@ public class Doctor extends User implements Serializable {
 	private Date dateOuverture;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateSansRDV;
+	@Column(columnDefinition = "TEXT")
 	private String presentation;
 	@Embedded
 	private Adresse adresse;
+	private Boolean doctolib ;
 
 
 	@OneToMany(fetch=FetchType.EAGER)
@@ -39,7 +43,7 @@ public class Doctor extends User implements Serializable {
 	private List<ExerciceDoctor> exercices = new ArrayList<>();
 	@OneToMany
 	private List<FormationDoctor> formations = new ArrayList<>();
-	@OneToMany
+	@OneToMany(cascade=CascadeType.PERSIST)
 	private List<TarifDoctor> tarifs = new ArrayList<>();
 	@OneToOne(mappedBy="doctor")
 	private Calendrier calendrier;
@@ -129,6 +133,14 @@ public class Doctor extends User implements Serializable {
 
 	public void setTarifs(List<TarifDoctor> tarifs) {
 		this.tarifs = tarifs;
+	}
+
+	public Boolean getDoctolib() {
+		return doctolib;
+	}
+
+	public void setDoctolib(Boolean doctolib) {
+		this.doctolib = doctolib;
 	}
 
 
