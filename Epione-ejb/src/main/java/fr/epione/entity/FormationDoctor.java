@@ -44,6 +44,12 @@ public class FormationDoctor implements Serializable{
 	}
 	public FormationDoctor() {
 	}
+	@Override
+	public String toString() {
+		return "FormationDoctor [id=" + id + ", date=" + date + ", diplome=" + diplome + "]";
+	}
+	
+	
 	
 	
 	

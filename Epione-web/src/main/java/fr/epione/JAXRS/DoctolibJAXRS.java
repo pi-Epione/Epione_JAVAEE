@@ -1,7 +1,10 @@
 package fr.epione.JAXRS;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -25,6 +28,7 @@ import fr.epione.JAXRS.TestMedali.Services;
 import fr.epione.entity.Adresse;
 import fr.epione.entity.DemandeDoctolib;
 import fr.epione.entity.Doctor;
+import fr.epione.entity.FormationDoctor;
 import fr.epione.entity.TarifDoctor;
 import fr.epione.entity.User;
 import fr.epione.interfaces.doctolib.IDoctorServiceLocal;
@@ -92,6 +96,16 @@ public class DoctolibJAXRS {
 	public Response getAll(){
 		
 		  GenericEntity<List<Doctor>> entity = new GenericEntity<List<Doctor>>(getListe()){};
+			return Response.ok(entity).build();			
+	}
+	
+	@Path("getFormations")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getFormations(){
+		String url = "https://www.doctolib.fr/osteopathe/tassin-la-demi-lune/flavien-lamour" ; 
+		List<FormationDoctor> lis = getFormation(url) ;
+		GenericEntity<List<FormationDoctor>> entity = new GenericEntity<List<FormationDoctor>>(lis){};
 			return Response.ok(entity).build();			
 	}
 	
@@ -245,7 +259,57 @@ public class DoctolibJAXRS {
 	}
 	
 	
-	
+	List<FormationDoctor> getFormation(String url)
+	{
+		
+		List<FormationDoctor> liste = new ArrayList<FormationDoctor>();
+		Document fiche;
+		try {
+		fiche = Jsoup.connect(url).userAgent("Opera").get();
+		Elements test = fiche.select("body > div.dl-profile-bg.dl-profile > div.dl-profile-wrapper.dl-profile-responsive-wrapper > div.dl-profile-body-wrapper > div:nth-child(6) > div:nth-child(3) > div.dl-profile-card-content"); 
+		String partsF[] = test.text().split(" ") ;
+		try {
+		for (int i=0 ; i<partsF.length ; i++)
+		{
+			if(partsF[i].contains("Formations"))
+				{
+				Elements data = test.select(">div") ; 
+				for (Element p: data)
+				{
+					FormationDoctor f = new FormationDoctor();
+					String partsData[] = p.text().split(" ") ;
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy");		
+					Date d;
+					d = sdf.parse(partsData[0]);
+					f.setDate(d);
+				/*	String desc = "" ; 
+					for( int j=1 ; j<partsData.length ; j++)
+					{
+						desc+=partsData[i] ;
+						
+					}*/
+					f.setDiplome(p.text());
+					System.out.println(f);
+					liste.add(f);
+					System.out.println("element : "+p.text());
+				}
+				break ;
+				}
+			else {System.out.println("false");
+			}
+		}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return liste; 
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null ;
+		}
+
+	}
 	
 	
 	
