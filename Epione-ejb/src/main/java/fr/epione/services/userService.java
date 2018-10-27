@@ -49,7 +49,7 @@ public class userService implements IuserServiceLocal, IuserServiceRemote {
 
 	@Override
 	public User getUserById(int idUser) {
-		return em.find(User.class, getIdUser(req));
+		return em.find(User.class, idUser);
 	}
 
 	@Override
@@ -222,6 +222,18 @@ public class userService implements IuserServiceLocal, IuserServiceRemote {
 				.setParameter("user", user).getSingleResult();
 		em.remove(device);
 		return true;
+	}
+
+	@Override
+	public boolean deleteDoctorById(int id) {
+		try {
+			Doctor doctor = em.find(Doctor.class, id);
+			doctor.getListMotifs().clear();
+			em.remove(doctor);
+			return true;
+		} catch (NoResultException e) {
+			return false;
+		}
 	}
 
 }

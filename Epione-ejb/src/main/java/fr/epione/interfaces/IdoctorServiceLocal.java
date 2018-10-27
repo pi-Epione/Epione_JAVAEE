@@ -1,12 +1,14 @@
 package fr.epione.interfaces;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.ejb.Local;
 import javax.json.JsonObject;
 
-import fr.epione.entity.Calendrier;
-import fr.epione.entity.HorairesCalendar;
+
 import fr.epione.entity.MotifDoctor;
 import fr.epione.entity.User;
 
@@ -15,10 +17,10 @@ public interface IdoctorServiceLocal {
 
 	JsonObject addMotif(MotifDoctor motif);
 
-	JsonObject initialCalendar();
+	JsonObject initialCalendar(int idDoctor);
 
-	Calendrier getCalendarByDoctorId();
-
+	JsonObject updateCalendar(int id,Date date,HashMap<Integer, Integer> listHorairesPerso);
+	
 	MotifDoctor getMotifById(int idMotif);
 
 	JsonObject initialMotifs(List<Integer> idsMotif,int idDoctor);
@@ -28,6 +30,8 @@ public interface IdoctorServiceLocal {
 	List<MotifDoctor> getListMotifsByDoctor(int idDoctor);
 	
 	List<MotifDoctor> getAllMotifs();
+	
+	boolean deleteJournee(int id ,Date date);
 	
 	
 }

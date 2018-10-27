@@ -3,6 +3,7 @@ package fr.epione.utils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -12,6 +13,8 @@ import javax.mail.internet.InternetAddress;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import fr.epione.entity.Horaires;
+import fr.epione.entity.Journee;
 import fr.epione.entity.User;
 
 public class Utils {
@@ -68,8 +71,5 @@ public class Utils {
 		return listError;
 
 	}
-	public static void initialCalendar(Date date){
-		
-	}
-
+	
 }

@@ -27,6 +27,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.jboss.resteasy.annotations.Query;
+
 import fr.epione.entity.Device;
 import fr.epione.entity.Doctor;
 import fr.epione.entity.Patient;
@@ -44,6 +46,14 @@ public class userJAXRS {
 	IuserServiceLocal userService;
 	@Context
 	private UriInfo uriInfo;
+	
+	
+	@Path("get")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response get(@Context HttpServletRequest req){
+		return Response.ok(Utils.getIdUserFromSession(req)).build();
+	}
 
 	@Path("index")
 	@GET
@@ -82,6 +92,7 @@ public class userJAXRS {
 	public Response logIn(@QueryParam(value = "email") String email, @QueryParam(value = "password") String password,
 			@Context HttpServletRequest req, @Context HttpServletResponse resp) {
 
+	
 		String tab[] = Utils.getOsBrowserUser(req.getHeader("User-Agent"));
 		User user = userService.getUserByEmail(email);
 		if (user == null) {
@@ -107,6 +118,7 @@ public class userJAXRS {
 
 	}
 
+
 	@Path("logOut")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -115,7 +127,7 @@ public class userJAXRS {
 		JsonObject json = userService.logOut(Utils.getIdUserFromSession(req));
 		userService.logOutFromDevice(Utils.getIdUserFromSession(req));
 		Utils.destroySession(req);
-	
+
 		return Response.ok(json).build();
 	}
 
@@ -145,6 +157,13 @@ public class userJAXRS {
 		GenericEntity<List<User>> entity = new GenericEntity<List<User>>(list) {
 		};
 		return Response.ok(entity).build();
+	}
+
+	@Path("deleteDoctor")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteDoctorById(@QueryParam(value="idDoctor") int idDoctor) {
+		return Response.ok(userService.deleteDoctorById(idDoctor)).build();
 	}
 
 	@Path("token")
