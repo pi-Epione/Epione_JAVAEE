@@ -1,5 +1,9 @@
 package fr.epione.JAXRS;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -20,7 +24,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import fr.epione.entity.Calendrier;
-import fr.epione.entity.HorairesCalendar;
+
 import fr.epione.entity.MotifDoctor;
 import fr.epione.interfaces.IdoctorServiceLocal;
 import fr.epione.utils.Utils;
@@ -44,7 +48,7 @@ public class DoctorRessources {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response initialMotifs(List<Integer> idsMotif ,@Context HttpServletRequest req) {
+	public Response initialMotifs(List<Integer> idsMotif, @Context HttpServletRequest req) {
 		return Response.ok(doctorService.initialMotifs(idsMotif, Utils.getIdUserFromSession(req))).build();
 	}
 
@@ -52,8 +56,8 @@ public class DoctorRessources {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateMotifs(List<Integer> idsMotif , @Context HttpServletRequest req) {
-		return Response.ok(doctorService.updateMotif(idsMotif,Utils.getIdUserFromSession(req))).build();
+	public Response updateMotifs(List<Integer> idsMotif, @Context HttpServletRequest req) {
+		return Response.ok(doctorService.updateMotif(idsMotif, Utils.getIdUserFromSession(req))).build();
 	}
 
 	@Path("getMotif")
@@ -76,19 +80,30 @@ public class DoctorRessources {
 	public Response getAllMotifs() {
 		return Response.ok(doctorService.getAllMotifs()).build();
 	}
+
 	@Path("initialCalendar")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response initialCalendar() {
-		return Response.ok(doctorService.initialCalendar()).build();
+	public Response initialCalendar(@Context HttpServletRequest req) {
+		return Response.ok(doctorService.initialCalendar(Utils.getIdUserFromSession(req))).build();
 	}
 
-	@Path("getCalendar")
-	@GET
+	@Path("persoCalendar")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getCalendar() {
-		return Response.ok(doctorService.getCalendarByDoctorId()).build();
+	public Response personnaliserCalendar(@Context HttpServletRequest req, @QueryParam(value = "date") Date date,
+			HashMap<Integer, Integer> listHorairesPerso) {
+		return Response.ok(doctorService.updateCalendar(Utils.getIdUserFromSession(req), date, listHorairesPerso))
+				.build();
 	}
 	
+	@Path("deleteJournee")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteJournee(@Context HttpServletRequest req, @QueryParam(value = "date") Date date){
+		return Response.ok(doctorService.deleteJournee(Utils.getIdUserFromSession(req), date))
+				.build();
+	}
 
 }

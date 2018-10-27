@@ -41,8 +41,7 @@ public class Doctor extends User implements Serializable {
 	private List<FormationDoctor> formations = new ArrayList<>();
 	@OneToMany
 	private List<TarifDoctor> tarifs = new ArrayList<>();
-	@OneToOne(mappedBy="doctor")
-	private Calendrier calendrier;
+	
 
 	// ******************** M ***********************///
 	
