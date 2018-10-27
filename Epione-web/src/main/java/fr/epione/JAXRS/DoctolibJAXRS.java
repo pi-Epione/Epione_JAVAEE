@@ -23,6 +23,7 @@ import org.jsoup.select.Elements;
 
 import fr.epione.JAXRS.TestMedali.Services;
 import fr.epione.entity.Adresse;
+import fr.epione.entity.DemandeDoctolib;
 import fr.epione.entity.Doctor;
 import fr.epione.entity.TarifDoctor;
 import fr.epione.entity.User;
@@ -46,6 +47,27 @@ public class DoctolibJAXRS {
 	public Response addDoctor(Doctor doctor){
 		int id = DS.addDoctor(doctor) ; 
 		return Response.ok(id).build();
+	}
+	
+	
+	@Path("ajoutDemande")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response ajoutDemande(DemandeDoctolib demande){
+		int id = DS.ajoutDemande(demande) ; 
+		return Response.ok(id).build();
+	}
+	
+	@Path("getDemande")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDemande() {
+		
+		List<DemandeDoctolib> liste = DS.getDemandes();
+		GenericEntity<List<DemandeDoctolib>> entity = new GenericEntity<List<DemandeDoctolib>>(liste){};
+		return Response.ok(entity).build();
+
 	}
 		
 	
@@ -75,63 +97,50 @@ public class DoctolibJAXRS {
 	
 	
 	
-	@Path("test")
-	@GET
-	@Produces(MediaType.TEXT_PLAIN)
-	public String test(){
-		Doctor doctor = new Doctor() ; 
-		doctor.setSpecialite("infirmier");
-		Adresse adr = new Adresse() ; 
-		adr.setVille("Le Pariés"); adr.setRue("fef");
-		doctor.setAdresse(adr);
-		doctor.setFirstName("Meéali"); doctor.setLastName("Ayedi");
-		String url = getUrl(doctor)  ;
-		return url;
-	}
 	
-	@Path("add")
-	@GET
-	@Produces(MediaType.TEXT_PLAIN)
-	public int add(){
-		String specialite = "osteopathe" ; String ville = "tassin-la-demi-lune" ; String nom = "Flavien"  ; String prenom="Lamour";
-		Doctor doctor = new Doctor() ; 
-		Adresse adr = new Adresse() ; adr.setVille(ville);
-		doctor.setSpecialite(specialite);doctor.setAdresse(adr);doctor.setFirstName(nom);doctor.setLastName(prenom);
-
-		String url = getUrl(doctor)  ;
-		Doctor DoctorFinal = getOne(url, doctor) ;
-		int id = DS.addDoctor(DoctorFinal) ;
-		return id;
+	
+	
+	@Path("AcceptDemande")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response AcceptDemande(DemandeDoctolib demande){
+		
+		//this is supposed to be Input from Front but for test i will fill the object 
+		demande.setFirstName("Flavien"); demande.setLastName("Lamour"); demande.setSpecialite("osteopathe");
+		demande.setVille("tassin-la-demi-lune");
+		/////////////////////////////////////////////////////////////////////////////
+		String url = parseURL(demande) ; 
+		
+		Doctor d = getOne(url, demande);
+		d.setDoctolib(true);
+		int id = DS.addDoctor(d) ; 
+		return Response.ok(id).build();
 	}
 	
 	
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	public String getUrl(Doctor doctor)
+	public String parseURL(DemandeDoctolib demande)
 	{
-		String specialite = doctor.getSpecialite(); 
-		String ville = doctor.getAdresse().getVille();
+		String specialite = demande.getSpecialite();
+		String ville = demande.getVille();
 		ville = ville.toLowerCase().replaceAll(" ", "-").replaceAll("ÿ", "y").replaceAll("'", "-").replaceAll("é", "e") ;
-		String name = doctor.getFirstName().toLowerCase()+"-"+doctor.getLastName().toLowerCase();
+		String name = demande.getFirstName().toLowerCase()+"-"+demande.getLastName().toLowerCase();
 		name = name.replaceAll("é", "e") ; 
-		String url="www.doctolib.fr/"+specialite+"/"+ville+"/"+name;
-		return  url ;
+		String url ="https://www.doctolib.fr/"+specialite+"/"+ville+"/"+name;
+		return url ;
 	}
+	
+	
+	
+
 
 	
 	
 	
-	
-	public Doctor getOne(String path, Doctor old)
+	public Doctor getOne(String path, DemandeDoctolib demande)
 	{
 		Doctor doctor = new Doctor();
 		
@@ -140,6 +149,7 @@ public class DoctolibJAXRS {
 		
 		List<String> liste = new ArrayList<String>() ;
 		String url = path;
+		url.replaceAll(" ",	"") ;
 		Document fiche;
 		try {
 			fiche = Jsoup.connect(url).userAgent("Opera").get();
@@ -162,37 +172,12 @@ public class DoctolibJAXRS {
 		  System.out.println(expertise);
 		
 		
-		  ////////////////////////////////////////////////////////
-		  
-		
-		//Recuperation mode de paiement
-		Elements PaiementData = fiche.select(".dl-profile-row-content").select(".dl-profile-row-section")
-																		.select(".dl-profile-card-content")
-																		.select(".dl-profile-text") ;
-		String modePaiement=PaiementData.text();
-		System.out.println(modePaiement);
-
-		///////////////////////////////////////////////////////////////////////////
-		
 		//Recuperation adresse
 		Elements adresseData= fiche.select("div.dl-profile-body-wrapper > div:nth-child(4) > div > div.dl-profile-card-content > div:nth-child(2)") ; 
 		System.out.println(adresseData.text());
 		
-		doctor.setAdresse(old.getAdresse());
-		
-		
-		/////////////////////////////////////////////////////////////////////////////
-		
-		//Recupartion des moyens de transport
-		List<String> moyensTransport = new ArrayList<String>();
-		Elements transport = fiche.select("body > div.dl-profile-bg.dl-profile > div.dl-profile-wrapper.dl-profile-responsive-wrapper > div.dl-profile-body-wrapper > div:nth-child(4) > div > div.dl-profile-card-content > div:nth-child(3) span ") ;
-		for(Element p : transport)
-		{
-			moyensTransport.add(p.text()) ;
-		}
-		System.out.println(moyensTransport);
-		
-		/////////////////////////////////////////////////////////////////////////////
+		doctor.setAdresse(DS.ParseAdresse(adresseData.text()));
+			
 		
 		//Recuperation du prix
 		
@@ -200,11 +185,20 @@ public class DoctolibJAXRS {
 		System.out.println(prix.text());
 		TarifDoctor tarif = new TarifDoctor() ;
 		tarif.setDescription("prix consultation");
-		Float f = Float.parseFloat(prix.text()) ;
+		String parts[] = prix.text().split(" "); 
+		Float f = Float.parseFloat(parts[0]) ;
 		tarif.setTarif(f);
+		doctor.getTarifs().add(tarif);
 		
 		/////////////////////////////////////////////////////////////////////////////
 
+		Elements pres = fiche.select("div.dl-profile-card-content > div.dl-profile-text.js-bio.dl-profile-bio"); 
+
+		
+		doctor.setPresentation(pres.text());
+		doctor.setFirstName(demande.getFirstName());
+		doctor.setLastName(demande.getLastName());
+		doctor.setSpecialite(demande.getSpecialite());
 		return doctor ;
 
 		} catch (IOException e) {
@@ -212,15 +206,9 @@ public class DoctolibJAXRS {
 			e.printStackTrace();
 			return null ;
 		}
-		
-		
-		
-		
+
 		
 	}
-	
-	
-	
 	
 	
 	
@@ -242,7 +230,7 @@ public class DoctolibJAXRS {
 			String adresse = p.select(".dl-text").text();
 			String image = p.select("img").attr("src") ; 
 			System.out.println(name + image );
-			Adresse adr = ParseAdresse(adresse) ; 
+			Adresse adr = DS.ParseAdresse(adresse) ; 
 			
 			Doctor doctor = new Doctor() ; doctor.setFirstName(parts[1]); doctor.setLastName(parts[2]);
 			doctor.setAdresse(adr);
@@ -265,42 +253,6 @@ public class DoctolibJAXRS {
 	
 	
 	
-	
-	
-	
-	public Adresse ParseAdresse(String adresse)
-	{
-		Adresse adr = new Adresse() ; 
-		
-		String parts[] = adresse.split(" ") ;
-		
-		adr.setNumAppart(parts[0]);
-		String rue ="" ;
-		for(int i=1 ; i<parts.length ; i++)
-		{
-			if (stringContainsNumber(parts[i]))
-			{
-				adr.setRue(rue);
-				adr.setCodePostal(parts[i]);
-				String ville ="" ; 
-				for(int j=i+1 ; j<parts.length ; j++)
-				{
-					ville+=parts[j];
-				}
-				adr.setVille(ville);
-			}
-			rue+=parts[i]+" " ; 
-
-		}
-		
-		return adr;
-	}
-	
-	
-	public boolean stringContainsNumber( String s )
-	{
-	    return Pattern.compile( "[0-9]" ).matcher( s ).find();
-	}
 	
 	
 	

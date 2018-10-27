@@ -3,16 +3,20 @@ package fr.epione.services.doctolib;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import fr.epione.entity.Adresse;
+import fr.epione.entity.DemandeDoctolib;
 import fr.epione.entity.Doctor;
 import fr.epione.entity.User;
 import fr.epione.interfaces.doctolib.IDoctorServiceLocal;
@@ -61,8 +65,60 @@ public class DoctorService implements IDoctorServiceLocal,IDoctorServiceRemote {
 		}
 	}
 
+	@Override
+	public int ajoutDemande(DemandeDoctolib demande) {
+		em.persist(demande);
+		return demande.getId();
+	}
 
 
 
+
+
+	@Override
+	public Adresse ParseAdresse(String adresse)
+	{
+		Adresse adr = new Adresse() ; 
+		
+		String parts[] = adresse.split(" ") ;
+		
+		adr.setNumAppart(parts[0]);
+		String rue ="" ;
+		for(int i=1 ; i<parts.length ; i++)
+		{
+			if (stringContainsNumber(parts[i]))
+			{
+				adr.setRue(rue);
+				adr.setCodePostal(parts[i]);
+				String ville ="" ; 
+				for(int j=i+1 ; j<parts.length ; j++)
+				{
+					ville+=parts[j];
+				}
+				adr.setVille(ville);
+			}
+			rue+=parts[i]+" " ; 
+
+		}
+		
+		return adr;
+	}
+	
+	
+	public boolean stringContainsNumber( String s )
+	{
+	    return Pattern.compile( "[0-9]" ).matcher( s ).find();
+	}
+
+	@Override
+	public List<DemandeDoctolib> getDemandes() {
+
+		String jpql = "SELECT d FROM DemandeDoctolib d " ; 
+		Query query = em.createQuery(jpql) ; 
+		return query.getResultList(); 
+	}
+	
+	
+	
 
 }
