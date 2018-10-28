@@ -35,6 +35,8 @@ public class Doctor extends User implements Serializable {
 	private Boolean doctolib ;
 
 
+	@OneToMany
+	private List<ExpertiseDoctor> expertises = new ArrayList<>(); 
 	@OneToMany(fetch=FetchType.EAGER)
 	private List<MotifDoctor> listMotifs = new ArrayList<>();
 	@OneToMany
@@ -141,6 +143,16 @@ public class Doctor extends User implements Serializable {
 	public void setDoctolib(Boolean doctolib) {
 		this.doctolib = doctolib;
 	}
+
+	public List<ExpertiseDoctor> getExpertises() {
+		return expertises;
+	}
+
+	public void setExpertises(List<ExpertiseDoctor> expertises) {
+		this.expertises = expertises;
+	}
+	
+	
 
 
 

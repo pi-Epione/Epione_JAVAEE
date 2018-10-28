@@ -10,6 +10,8 @@ import org.jsoup.select.Elements;
 import fr.epione.entity.Adresse;
 import fr.epione.entity.DemandeDoctolib;
 import fr.epione.entity.Doctor;
+import fr.epione.entity.ExpertiseDoctor;
+import fr.epione.entity.FormationDoctor;
 
 @Local
 public interface IDoctorServiceLocal {
@@ -19,4 +21,9 @@ public interface IDoctorServiceLocal {
 	int ajoutDemande(DemandeDoctolib demande) ; 
 	Adresse ParseAdresse(String adresse)  ;
 	List<DemandeDoctolib> getDemandes() ; 
+	void AddExpertises(List<ExpertiseDoctor> liste) ;
+	void addFormations(List<FormationDoctor> liste) ; 
+	void AffecterExpertise(List<ExpertiseDoctor> liste , Doctor doctor ) ;
+	void affecterFormations(List<FormationDoctor> liste , Doctor doctor ) ;
+	List<Doctor> getAllDoctors() ;
 }

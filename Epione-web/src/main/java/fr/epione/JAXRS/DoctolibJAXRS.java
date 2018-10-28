@@ -28,6 +28,7 @@ import fr.epione.JAXRS.TestMedali.Services;
 import fr.epione.entity.Adresse;
 import fr.epione.entity.DemandeDoctolib;
 import fr.epione.entity.Doctor;
+import fr.epione.entity.ExpertiseDoctor;
 import fr.epione.entity.FormationDoctor;
 import fr.epione.entity.TarifDoctor;
 import fr.epione.entity.User;
@@ -103,11 +104,21 @@ public class DoctolibJAXRS {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getFormations(){
-		String url = "https://www.doctolib.fr/osteopathe/tassin-la-demi-lune/flavien-lamour" ; 
+		String url = "https://www.doctolib.fr/dentiste/joinville/rachwan-balgone" ; 
 		List<FormationDoctor> lis = getFormation(url) ;
 		GenericEntity<List<FormationDoctor>> entity = new GenericEntity<List<FormationDoctor>>(lis){};
 			return Response.ok(entity).build();			
 	}
+	@Path("getExpertise")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getExpertises(){
+		String url = "https://www.doctolib.fr/chirurgien/saint-pierre-du-mont/gerold-schroder" ; 
+		List<ExpertiseDoctor> lis = getExpertise(url) ;
+		GenericEntity<List<ExpertiseDoctor>> entity = new GenericEntity<List<ExpertiseDoctor>>(lis){};
+			return Response.ok(entity).build();			
+	}
+	
 	
 	
 	
@@ -127,9 +138,31 @@ public class DoctolibJAXRS {
 		String url = parseURL(demande) ; 
 		
 		Doctor d = getOne(url, demande);
+		List<ExpertiseDoctor> expertises= getExpertise(url) ;
+		List<FormationDoctor> formations= getFormation(url); 
+		DS.AddExpertises(expertises);
+		DS.addFormations(formations);
+		DS.AffecterExpertise(expertises, d);
+		DS.affecterFormations(formations, d);
+		
 		d.setDoctolib(true);
 		int id = DS.addDoctor(d) ; 
 		return Response.ok(id).build();
+	}
+	
+	
+	
+	
+	
+	@Path("testjoin")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response testjoin() {
+		
+		List<DemandeDoctolib> liste = DS.getDemandes();
+		GenericEntity<List<DemandeDoctolib>> entity = new GenericEntity<List<DemandeDoctolib>>(liste){};
+		return Response.ok(entity).build();
+
 	}
 	
 	
@@ -314,7 +347,29 @@ public class DoctolibJAXRS {
 	
 	
 	
-	
+	List<ExpertiseDoctor> getExpertise(String url)
+	{
+		List<ExpertiseDoctor> liste = new ArrayList<ExpertiseDoctor>();
+		Document fiche;
+		try {
+			fiche = Jsoup.connect(url).userAgent("Opera").get();
+
+
+		String expertise ="" ;  int testexp = 0 ; 
+		Elements expertiseData = fiche.getElementsByClass("dl-profile-skill-chip") ; 
+		for(Element p : expertiseData)
+		{
+			ExpertiseDoctor exp = new ExpertiseDoctor() ; 
+			exp.setNom(p.text());
+			liste.add(exp) ;
+		}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null ;
+		}
+		return liste ;
+	}
 	
 	
 	
