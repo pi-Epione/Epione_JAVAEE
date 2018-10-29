@@ -1,12 +1,15 @@
 package fr.epione.entity;
 
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+
 
 @Entity
 public class Patient extends User implements Serializable {
@@ -14,13 +17,10 @@ public class Patient extends User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Adresse adresse;
-	@OneToMany(mappedBy = "patient")
+	@OneToMany(fetch = FetchType.EAGER,mappedBy = "patient")
 	private List<RendezVous> listeRendezVous = new ArrayList<>();
 
-	public List<RendezVous> getListeRendezVous() {
-		return listeRendezVous;
-	}
-
+	
 	public void setListeRendezVous(List<RendezVous> listeRendezVous) {
 		this.listeRendezVous = listeRendezVous;
 	}

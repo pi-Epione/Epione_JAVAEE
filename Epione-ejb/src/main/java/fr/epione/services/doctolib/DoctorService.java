@@ -18,6 +18,8 @@ import org.jsoup.select.Elements;
 import fr.epione.entity.Adresse;
 import fr.epione.entity.DemandeDoctolib;
 import fr.epione.entity.Doctor;
+import fr.epione.entity.ExpertiseDoctor;
+import fr.epione.entity.FormationDoctor;
 import fr.epione.entity.User;
 import fr.epione.interfaces.doctolib.IDoctorServiceLocal;
 import fr.epione.interfaces.doctolib.IDoctorServiceRemote;
@@ -116,6 +118,60 @@ public class DoctorService implements IDoctorServiceLocal,IDoctorServiceRemote {
 		String jpql = "SELECT d FROM DemandeDoctolib d " ; 
 		Query query = em.createQuery(jpql) ; 
 		return query.getResultList(); 
+	}
+
+	@Override
+	public void AddExpertises(List<ExpertiseDoctor> liste) {
+
+		for (ExpertiseDoctor e : liste)
+		{
+			em.persist(e);
+		}
+	}
+
+	@Override
+	public void addFormations(List<FormationDoctor> liste) {
+
+		for ( FormationDoctor f : liste)
+		{
+			em.persist(f);
+		}
+	}
+
+	@Override
+	public void AffecterExpertise(List<ExpertiseDoctor> liste, Doctor doctor) {
+
+		List<ExpertiseDoctor> expertises = new ArrayList<ExpertiseDoctor>() ; 
+		
+		for ( ExpertiseDoctor e : liste )
+		{
+			expertises.add(e);
+			System.out.println(e);
+		}
+		System.out.println("doctor is " + doctor );
+		System.out.println(expertises);
+		doctor.setExpertises(expertises);
+
+		
+	}
+
+	@Override
+	public void affecterFormations(List<FormationDoctor> liste, Doctor doctor) {
+		
+		List<FormationDoctor> formations = new ArrayList<FormationDoctor>() ; 
+		
+		for( FormationDoctor f : liste)
+		{
+			formations.add(f) ; 
+		}
+		doctor.setFormations(formations);
+		
+	}
+
+	@Override
+	public List<Doctor> getAllDoctors() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	
