@@ -37,14 +37,10 @@ public class Doctor extends User implements Serializable {
 	private Adresse adresse;
 	private Boolean doctolib ;
 
-<<<<<<< HEAD
 
-	@OneToMany(fetch=FetchType.EAGER)
-=======
 	@OneToMany(fetch = FetchType.EAGER,mappedBy = "Medecin")
 	private List<RendezVous> listeRendezVous = new ArrayList<>();
 	@OneToMany
->>>>>>> b357f388748c4e3a60b978c84926ac49939f1e39
 	private List<ExpertiseDoctor> expertises = new ArrayList<>(); 
 	@OneToMany(fetch=FetchType.EAGER)
 	private List<MotifDoctor> listMotifs = new ArrayList<>();
@@ -54,11 +50,8 @@ public class Doctor extends User implements Serializable {
 	private List<ExerciceDoctor> exercices = new ArrayList<>();
 	@OneToMany(fetch=FetchType.EAGER)
 	private List<FormationDoctor> formations = new ArrayList<>();
-<<<<<<< HEAD
-	@OneToMany(cascade=CascadeType.PERSIST , fetch=FetchType.EAGER)
-=======
+
 	@OneToMany(cascade=CascadeType.PERSIST,fetch=FetchType.EAGER)
->>>>>>> b357f388748c4e3a60b978c84926ac49939f1e39
 	private List<TarifDoctor> tarifs = new ArrayList<>();
 	
 
