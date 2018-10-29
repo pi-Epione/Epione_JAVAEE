@@ -71,5 +71,21 @@ public class Utils {
 		return listError;
 
 	}
+	public static boolean validateTime(int heure,int minute,Date date){
+		Calendar newDate = Calendar.getInstance();
+		newDate.set(Calendar.HOUR_OF_DAY, heure);
+		newDate.set(Calendar.MINUTE, minute);
+		Calendar nowDate = Calendar.getInstance();
+		Calendar dateFromUser = Calendar.getInstance();
+		dateFromUser.setTime(date);
+		if ((newDate.get(Calendar.HOUR_OF_DAY) >= nowDate.get(Calendar.HOUR_OF_DAY)
+				&& newDate.get(Calendar.MINUTE) - nowDate.get(Calendar.MINUTE) > 15)
+				|| (newDate.get(Calendar.HOUR_OF_DAY) > nowDate.get(Calendar.HOUR_OF_DAY)) 
+				||(dateFromUser.after(nowDate))){
+			return true;
+		}else{
+			return false;
+		}
+	}
 	
 }

@@ -1,5 +1,6 @@
 package fr.epione.entity;
 
+import javax.jms.JMSSessionMode;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -11,13 +12,15 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-
 @Table(name = "doctor")
 public class Doctor extends User implements Serializable {
 
@@ -37,13 +40,13 @@ public class Doctor extends User implements Serializable {
 
 	@OneToMany(fetch=FetchType.EAGER)
 	private List<MotifDoctor> listMotifs = new ArrayList<>();
-	@OneToMany
+	@OneToMany(fetch=FetchType.EAGER)
 	private List<LangueDoctor> langues = new ArrayList<>();
-	@OneToMany
+	@OneToMany(fetch=FetchType.EAGER)
 	private List<ExerciceDoctor> exercices = new ArrayList<>();
-	@OneToMany
+	@OneToMany(fetch=FetchType.EAGER)
 	private List<FormationDoctor> formations = new ArrayList<>();
-	@OneToMany(cascade=CascadeType.PERSIST)
+	@OneToMany(cascade=CascadeType.PERSIST,fetch=FetchType.EAGER)
 	private List<TarifDoctor> tarifs = new ArrayList<>();
 	
 
