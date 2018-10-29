@@ -34,7 +34,8 @@ public class Doctor extends User implements Serializable {
 	private Adresse adresse;
 	private Boolean doctolib ;
 
-
+	@OneToMany(fetch = FetchType.EAGER,mappedBy = "Medecin")
+	private List<RendezVous> listeRendezVous = new ArrayList<>();
 	@OneToMany
 	private List<ExpertiseDoctor> expertises = new ArrayList<>(); 
 	@OneToMany(fetch=FetchType.EAGER)
