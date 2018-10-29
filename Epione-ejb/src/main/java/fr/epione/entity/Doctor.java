@@ -1,5 +1,6 @@
 package fr.epione.entity;
 
+import javax.jms.JMSSessionMode;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -11,13 +12,15 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-
 @Table(name = "doctor")
 public class Doctor extends User implements Serializable {
 
@@ -34,8 +37,14 @@ public class Doctor extends User implements Serializable {
 	private Adresse adresse;
 	private Boolean doctolib ;
 
+<<<<<<< HEAD
 
 	@OneToMany(fetch=FetchType.EAGER)
+=======
+	@OneToMany(fetch = FetchType.EAGER,mappedBy = "Medecin")
+	private List<RendezVous> listeRendezVous = new ArrayList<>();
+	@OneToMany
+>>>>>>> b357f388748c4e3a60b978c84926ac49939f1e39
 	private List<ExpertiseDoctor> expertises = new ArrayList<>(); 
 	@OneToMany(fetch=FetchType.EAGER)
 	private List<MotifDoctor> listMotifs = new ArrayList<>();
@@ -45,7 +54,11 @@ public class Doctor extends User implements Serializable {
 	private List<ExerciceDoctor> exercices = new ArrayList<>();
 	@OneToMany(fetch=FetchType.EAGER)
 	private List<FormationDoctor> formations = new ArrayList<>();
+<<<<<<< HEAD
 	@OneToMany(cascade=CascadeType.PERSIST , fetch=FetchType.EAGER)
+=======
+	@OneToMany(cascade=CascadeType.PERSIST,fetch=FetchType.EAGER)
+>>>>>>> b357f388748c4e3a60b978c84926ac49939f1e39
 	private List<TarifDoctor> tarifs = new ArrayList<>();
 	
 

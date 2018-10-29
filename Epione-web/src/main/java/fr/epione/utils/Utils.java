@@ -1,5 +1,8 @@
 package fr.epione.utils;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -83,4 +86,5 @@ public class Utils {
 		}
 
 	}
+
 }
