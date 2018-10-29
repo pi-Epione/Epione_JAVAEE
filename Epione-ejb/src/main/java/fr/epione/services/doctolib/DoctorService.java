@@ -3,12 +3,19 @@ package fr.epione.services.doctolib;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.regex.Pattern;
 
 import javax.ejb.Stateless;
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -35,7 +42,9 @@ public class DoctorService implements IDoctorServiceLocal,IDoctorServiceRemote {
 	public int addDoctor(Doctor doctor) {
 
 		em.persist(doctor);
+		sendMail(doctor.getEmail());
 		return doctor.getId();
+		
 	}
 
 	@Override
@@ -69,8 +78,15 @@ public class DoctorService implements IDoctorServiceLocal,IDoctorServiceRemote {
 
 	@Override
 	public int ajoutDemande(DemandeDoctolib demande) {
-		em.persist(demande);
-		return demande.getId();
+		if(checkIfDemandeExist(demande))
+		{
+			return 0 ;
+		}
+		else {
+			em.persist(demande);
+			return demande.getId();
+		}
+		
 	}
 
 
@@ -170,11 +186,73 @@ public class DoctorService implements IDoctorServiceLocal,IDoctorServiceRemote {
 
 	@Override
 	public List<Doctor> getAllDoctors() {
-		// TODO Auto-generated method stub
-		return null;
+
+		String jpql = "SELECT d FROM Doctor d where d.doctolib=true " ; 
+		Query query = em.createQuery(jpql) ; 
+		return query.getResultList(); 
+	}
+
+	@Override
+	public Doctor getDoctor(int id) {
+		
+		Doctor d= em.find(Doctor.class, id) ; 
+		return d;
 	}
 	
 	
-	
+public void sendMail(String email)
+{
+	 try{
+         String host = "smtp.gmail.com";
+         String from = "medali.ayedi@esprit.tn";
+         String pass = "Medalicss1231996";
+         Properties props = System.getProperties();
+         props.put("mail.smtp.starttls.enable", "true");
+         props.put("mail.smtp.host", host);
+         props.put("mail.smtp.user", from);
+         props.put("mail.smtp.password", pass);
+         props.put("mail.smtp.port", "587");
+         props.put("mail.smtp.auth", "true");
+         String to=email ; 
+         Session session = Session.getDefaultInstance(props, null);
+         MimeMessage message = new MimeMessage(session);
+         message.setFrom(new InternetAddress(from));
+         InternetAddress toAddress = new InternetAddress(to);
+
+	   message.addRecipient(Message.RecipientType.TO, toAddress);
+    message.setSubject("sending in a group");
+    message.setText("test2");
+    Transport transport = session.getTransport("smtp");
+    transport.connect(host, from, pass);
+    transport.sendMessage(message, message.getAllRecipients());
+    transport.close();
+}
+catch(Exception e){
+    e.getMessage();
+}
+
+}
+
+@Override
+public int deleteDemande(DemandeDoctolib demande) {
+	System.out.println("this is it" +demande.getEmail());
+	 TypedQuery<DemandeDoctolib> query = em.createQuery(
+		        "SELECT c FROM DemandeDoctolib c WHERE c.email = :email", DemandeDoctolib.class);
+	 DemandeDoctolib d = query.setParameter("email", demande.getEmail()).getSingleResult();
+	em.remove(d);
+	return d.getId();
+}
+
+public Boolean checkIfDemandeExist(DemandeDoctolib demande)
+{
+
+ TypedQuery<DemandeDoctolib> query = em.createQuery(
+	        "SELECT c FROM DemandeDoctolib c WHERE c.email = :email", DemandeDoctolib.class);
+int size = query.setParameter("email", demande.getEmail()).getResultList().size();
+if(size==0) return false;
+else {
+	return true;
+}
+}
 
 }

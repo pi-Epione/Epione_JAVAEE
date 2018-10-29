@@ -35,17 +35,17 @@ public class Doctor extends User implements Serializable {
 	private Boolean doctolib ;
 
 
-	@OneToMany
+	@OneToMany(fetch=FetchType.EAGER)
 	private List<ExpertiseDoctor> expertises = new ArrayList<>(); 
 	@OneToMany(fetch=FetchType.EAGER)
 	private List<MotifDoctor> listMotifs = new ArrayList<>();
-	@OneToMany
+	@OneToMany(fetch=FetchType.EAGER)
 	private List<LangueDoctor> langues = new ArrayList<>();
-	@OneToMany
+	@OneToMany(fetch=FetchType.EAGER)
 	private List<ExerciceDoctor> exercices = new ArrayList<>();
-	@OneToMany
+	@OneToMany(fetch=FetchType.EAGER)
 	private List<FormationDoctor> formations = new ArrayList<>();
-	@OneToMany(cascade=CascadeType.PERSIST)
+	@OneToMany(cascade=CascadeType.PERSIST , fetch=FetchType.EAGER)
 	private List<TarifDoctor> tarifs = new ArrayList<>();
 	
 
@@ -150,6 +150,13 @@ public class Doctor extends User implements Serializable {
 
 	public void setExpertises(List<ExpertiseDoctor> expertises) {
 		this.expertises = expertises;
+	}
+
+	@Override
+	public String toString() {
+		return "Doctor [specialite=" + specialite + ", presentation=" + presentation + ", adresse=" + adresse
+				+ ", doctolib=" + doctolib + ", expertises=" + expertises + ", formations=" + formations + ", tarifs="
+				+ tarifs + "]";
 	}
 	
 	

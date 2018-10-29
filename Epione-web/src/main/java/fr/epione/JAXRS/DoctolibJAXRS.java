@@ -61,6 +61,10 @@ public class DoctolibJAXRS {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response ajoutDemande(DemandeDoctolib demande){
 		int id = DS.ajoutDemande(demande) ; 
+		if(id==0)
+		{
+			return Response.ok("Demande existe deja").build();
+		}
 		return Response.ok(id).build();
 	}
 	
@@ -150,21 +154,41 @@ public class DoctolibJAXRS {
 		return Response.ok(id).build();
 	}
 	
+	@Path("RejectDemande")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response Reject(DemandeDoctolib demande){
+		
+		DS.deleteDemande(demande) ;
+		return Response.ok("demande deleted").build();
+	}
 	
 	
 	
 	
-	@Path("testjoin")
+	
+	@Path("testinfo")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response testjoin() {
+	public Response testinfo() {
 		
-		List<DemandeDoctolib> liste = DS.getDemandes();
-		GenericEntity<List<DemandeDoctolib>> entity = new GenericEntity<List<DemandeDoctolib>>(liste){};
-		return Response.ok(entity).build();
+		Doctor d = DS.getDoctor(13) ;
+		return Response.ok(d).build();
 
 	}
 	
+	
+	@Path("getDoctorsDB")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDoctorsDB() {
+		
+		List<Doctor> liste = DS.getAllDoctors() ; 
+		GenericEntity<List<Doctor>> entity = new GenericEntity<List<Doctor>>(liste){};
+		return Response.ok(liste).build();
+
+	}
 	
 	
 	
@@ -246,6 +270,7 @@ public class DoctolibJAXRS {
 		doctor.setFirstName(demande.getFirstName());
 		doctor.setLastName(demande.getLastName());
 		doctor.setSpecialite(demande.getSpecialite());
+		doctor.setEmail(demande.getEmail());
 		return doctor ;
 
 		} catch (IOException e) {
