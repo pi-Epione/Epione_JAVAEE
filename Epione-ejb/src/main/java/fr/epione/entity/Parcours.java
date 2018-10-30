@@ -1,6 +1,7 @@
 package fr.epione.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -34,13 +35,13 @@ public class Parcours implements Serializable{
 	private Patient patient;
 	/* association parcours Rdv*/
 	@OneToMany(mappedBy = "parcours")
-	private List<RendezVous> rendezVous ;
+	private List<RendezVous> rendezVous= new ArrayList<>(); ;
 	// association parcours docteur
 	@ManyToOne()
 	private Doctor doctor;
 	//association traitement parcours
 	@OneToMany(mappedBy = "parcours",cascade=CascadeType.PERSIST)
-	private List<Treatment> treatment;
+	private List<Treatment> treatment= new ArrayList<>();;
 	
 	@XmlElement(name="DoctorNote")
 	public String getDoctorNote() {

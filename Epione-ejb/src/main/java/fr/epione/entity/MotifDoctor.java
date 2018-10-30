@@ -27,7 +27,7 @@ public class MotifDoctor implements Serializable{
 	private String description;
 	
 	@OneToMany(fetch = FetchType.EAGER,mappedBy = "motif")
-	private List<RendezVous> listeRendezVous ;
+	private List<RendezVous> listeRendezVous = new ArrayList<>();;
 	
 	public List<RendezVous> getListeRendezVous() {
 		return listeRendezVous;

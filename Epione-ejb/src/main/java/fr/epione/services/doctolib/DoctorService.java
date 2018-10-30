@@ -207,8 +207,10 @@ public class DoctorService implements IDoctorServiceLocal,IDoctorServiceRemote {
 
 	@Override
 	public List<Doctor> getAllDoctors() {
-		// TODO Auto-generated method stub
-		return null;
+
+		String jpql = "SELECT d FROM Doctor d where doctolib=true " ; 
+		Query query = em.createQuery(jpql) ; 
+		return query.getResultList(); 
 	}
 	
 	
@@ -317,6 +319,7 @@ public Doctor getDoctorByEmail(String email) {
 
 	return query.setParameter("email", email).getSingleResult();
 }
+ 
 
 @Override
 public double DoctolibPercentage() {

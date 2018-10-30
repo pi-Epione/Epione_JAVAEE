@@ -20,9 +20,9 @@ public class Patient extends User implements Serializable {
 
 	private Adresse adresse;
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "patient", cascade=CascadeType.PERSIST)
-	private List<RendezVous> listeRendezVous ;
+	private List<RendezVous> listeRendezVous= new ArrayList<>(); ;
 	@OneToMany(fetch = FetchType.EAGER,mappedBy = "patient")
-	private List<Message> messages ; 
+	private List<Message> messages = new ArrayList<>();; 
 
 	
 	// association parcours patient

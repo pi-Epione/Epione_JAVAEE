@@ -43,7 +43,7 @@ public class Doctor extends User implements Serializable {
 	private List<Parcours> parcours = new ArrayList<>();
 	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "Medecin", cascade= CascadeType.REMOVE)
-	private List<RendezVous> listeRendezVous ;
+	private List<RendezVous> listeRendezVous= new ArrayList<>(); ;
 	
 	public List<RendezVous> getListeRendezVous() {
 		return listeRendezVous;
