@@ -31,6 +31,7 @@ import fr.epione.entity.Horaires;
 import fr.epione.entity.Journee;
 import fr.epione.entity.MotifDoctor;
 import fr.epione.entity.User;
+import fr.epione.interfaces.IanalyticsDoctorLocal;
 import fr.epione.interfaces.IdoctorServiceLocal;
 import fr.epione.services.userService;
 import fr.epione.utils.Utils;
@@ -41,7 +42,8 @@ public class DoctorRessources {
 
 	@EJB
 	IdoctorServiceLocal doctorService;
-
+	
+	
 	@Path("addMotif")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)

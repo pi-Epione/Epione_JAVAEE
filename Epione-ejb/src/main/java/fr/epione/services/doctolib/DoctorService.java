@@ -99,8 +99,15 @@ public class DoctorService implements IDoctorServiceLocal,IDoctorServiceRemote {
 
 	@Override
 	public int ajoutDemande(DemandeDoctolib demande) {
+		Boolean test = checkIfDemandeExist(demande) ;
+		if(test)
+		{
+			return 0;
+		}
+		else {
 		em.persist(demande);
 		return demande.getId();
+		}
 	}
 
 
@@ -300,6 +307,7 @@ public Boolean deleteDoctor(Doctor doctor) {
 	System.out.println("-------------- test final = " + test);
 	return test ;
 	
+	
 }
 
 public Doctor getDoctorByEmail(String email) {
@@ -310,5 +318,26 @@ public Doctor getDoctorByEmail(String email) {
 	return query.setParameter("email", email).getSingleResult();
 }
 
+@Override
+public double DoctolibPercentage() {
+	
+	String jpql = "SELECT count(d.id) FROM Doctor d  where doctolib=true " ; 
+	Query query = em.createQuery(jpql) ; 
+	Long doctolibNumber = (Long) query.getSingleResult(); 
+	
+	
+	String jpql2 = "SELECT count(d.id) FROM Doctor d" ; 
+	Query query2 = em.createQuery(jpql2) ; 
+	Long NoDoctolibNumber = (Long) query2.getSingleResult();
+	
+	System.out.println(doctolibNumber+"--------------------------"+NoDoctolibNumber);
+
+	
+	double percentage = doctolibNumber*100/(NoDoctolibNumber) ;
+	return  percentage ;
+	
+	
+
+}
 
 }

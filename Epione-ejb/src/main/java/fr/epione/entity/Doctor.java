@@ -38,6 +38,10 @@ public class Doctor extends User implements Serializable {
 	private Boolean doctolib ;
 
 
+	/*association docteur parcours*/
+	@OneToMany(mappedBy = "doctor")
+	private List<Parcours> parcours = new ArrayList<>();
+	
 	@OneToMany(fetch = FetchType.EAGER,mappedBy = "Medecin")
 	private List<RendezVous> listeRendezVous = new ArrayList<>();
 	@OneToMany(fetch=FetchType.EAGER , cascade= CascadeType.REMOVE)
