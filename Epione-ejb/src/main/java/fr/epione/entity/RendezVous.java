@@ -1,7 +1,6 @@
 package fr.epione.entity;
 
 import java.io.Serializable;
-
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -14,9 +13,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-
 @Entity
 public class RendezVous implements Serializable{
 
@@ -26,6 +22,10 @@ public class RendezVous implements Serializable{
 	private int id; 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date ; 
+	private int heureDebut ; 
+	private int heureFin ;
+	/*private int order;*/
+	private boolean etat ;
 	private String reason;
 	@Enumerated(EnumType.STRING)
 	private State state;
@@ -33,6 +33,10 @@ public class RendezVous implements Serializable{
 	
 	@ManyToOne
 	private Patient patient ;
+	
+	/*association parcoursrdv*/
+	@ManyToOne()
+	private Parcours parcours ;
 	@ManyToOne
 	private MotifDoctor motif ; 
 	@ManyToOne
@@ -41,7 +45,15 @@ public class RendezVous implements Serializable{
 	public RendezVous() {
 		super();
 	} 
-	public RendezVous(Date date, Patient patient) {
+	public RendezVous(Date date, int heureDebut, int heureFin, boolean etat, Patient patient) {
+		super();
+		this.date = date;
+		this.heureDebut = heureDebut;
+		this.heureFin = heureFin;
+		this.etat = etat;
+		/*this.patient = patient;*/
+	}
+		public RendezVous(Date date, Patient patient) {
 		super();
 		this.date = date;
 		this.patient = patient;
@@ -58,22 +70,36 @@ public class RendezVous implements Serializable{
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
-	@JsonIgnore
+	public int getHeureDebut() {
+		return heureDebut;
+	}
+	public void setHeureDebut(int heureDebut) {
+		this.heureDebut = heureDebut;
+	}
+	public int getHeureFin() {
+		return heureFin;
+	}
+	public void setHeureFin(int heureFin) {
+		this.heureFin = heureFin;
+	}
+	public boolean isEtat() {
+		return etat;
+	}
+	public void setEtat(boolean etat) {
+		this.etat = etat;
+	}
 	public Patient getPatient() {
 		return patient;
 	}
 	public void setPatient(Patient patient) {
 		this.patient = patient;
 	}
-	@JsonIgnore
 	public MotifDoctor getMotif() {
 		return motif;
 	}
 	public void setMotif(MotifDoctor motif) {
 		this.motif = motif;
 	}
-	@JsonIgnore
 	public Doctor getMedecin() {
 		return Medecin;
 	}
@@ -94,5 +120,15 @@ public class RendezVous implements Serializable{
 	public void setState(State state) {
 		this.state = state;
 	}
-	
+/*	public int getOrder() {
+		return order;
+	}
+	public void setOrder(int order) {
+		this.order = order;
+	}*/
+	@Override
+	public String toString() {
+		return "RendezVous [date=" + date + ", heureDebut=" + heureDebut + ", heureFin=" + heureFin + ", etat=" + etat
+				+ ", patient= ]";
+	}
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 
 @Entity
@@ -17,6 +18,10 @@ public class Patient extends User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Adresse adresse;
+	
+	// association parcours patient
+		@OneToOne
+		private Parcours parcours ;
 	@OneToMany(fetch = FetchType.EAGER,mappedBy = "patient")
 	private List<RendezVous> listeRendezVous = new ArrayList<>();
 
