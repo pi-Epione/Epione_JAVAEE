@@ -194,16 +194,6 @@ public class DoctolibJAXRS {
 		return Response.ok(entity).build();
 
 	}
-	@Path("getDoctorsDB")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getDoctorsDB() {
-		
-		List<Doctor> liste = DS.getAllDoctors();
-		GenericEntity<List<Doctor>> entity = new GenericEntity<List<Doctor>>(liste){};
-		return Response.ok(entity).build();
-
-	}
 	
 	@Path("DoctolibPercentage")
 	@GET

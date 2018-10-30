@@ -29,7 +29,6 @@ public interface IuserServiceLocal {
 	boolean checkConnectedDevice(String host,String os,String browser,User user);
 	boolean logOutFromDevice(HttpServletRequest req ,int id);
 	boolean deleteDoctorById(int id);
-	boolean deletePatientById(int id); 
 	
 	
 	

@@ -42,17 +42,8 @@ public class Doctor extends User implements Serializable {
 	@OneToMany(mappedBy = "doctor")
 	private List<Parcours> parcours = new ArrayList<>();
 	
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "Medecin", cascade= CascadeType.REMOVE)
-	private List<RendezVous> listeRendezVous= new ArrayList<>(); ;
-	
-	public List<RendezVous> getListeRendezVous() {
-		return listeRendezVous;
-	}
-
-	public void setListeRendezVous(List<RendezVous> listeRendezVous) {
-		this.listeRendezVous = listeRendezVous;
-	}
-
+	@OneToMany(fetch = FetchType.EAGER,mappedBy = "Medecin")
+	private List<RendezVous> listeRendezVous = new ArrayList<>();
 	@OneToMany(fetch=FetchType.EAGER , cascade= CascadeType.REMOVE)
 	private List<ExpertiseDoctor> expertises = new ArrayList<>(); 
 	@OneToMany(fetch=FetchType.EAGER)
@@ -66,15 +57,11 @@ public class Doctor extends User implements Serializable {
 
 	@OneToMany(cascade= {CascadeType.PERSIST,CascadeType.REMOVE},fetch=FetchType.EAGER)
 	private List<TarifDoctor> tarifs = new ArrayList<>();
-	@OneToMany(fetch = FetchType.EAGER,mappedBy = "doctor")
-	private List<Message> messages ;
 	
+
+	// ******************** M ***********************///
 	
-	// ******************** M ***************************///
-	@OneToMany(mappedBy = "doctor")
-	private List<NotePatient> notes  = new ArrayList<>();
-	@OneToMany(mappedBy = "doctor")
-	private List<Chat> chats  = new ArrayList<>();
+
 	public Doctor() {
 
 	}
@@ -175,21 +162,13 @@ public class Doctor extends User implements Serializable {
 		this.expertises = expertises;
 	}
 
-	public List<Message> getMessages() {
-		return messages;
-	}
-
-	public void setMessages(List<Message> messages) {
-		this.messages = messages;
-	}
-	
 	@Override
 	public String toString() {
 		return "Doctor [specialite=" + specialite + ", presentation=" + presentation + ", adresse=" + adresse
 				+ ", doctolib=" + doctolib + ", expertises=" + expertises + ", formations=" + formations + ", tarifs="
 				+ tarifs + "]";
 	}
-
+	
 	
 
 

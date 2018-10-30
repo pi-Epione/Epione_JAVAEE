@@ -24,8 +24,6 @@ import javax.ws.rs.core.Context;
 import fr.epione.entity.Device;
 import fr.epione.entity.Doctor;
 import fr.epione.entity.Patient;
-import fr.epione.entity.RendezVous;
-import fr.epione.entity.State;
 import fr.epione.entity.User;
 import fr.epione.interfaces.IuserServiceLocal;
 import fr.epione.interfaces.IuserServiceRemote;
@@ -178,13 +176,7 @@ public class userService implements IuserServiceLocal, IuserServiceRemote {
 			patient.setConnected(Boolean.FALSE);
 			patient.setPassword(Utils.toMD5(patient.getPassword()));
 			em.persist(patient);
-            for(RendezVous r : patient.getListeRendezVous()){
-//            	if(r.getMedecin()==null){
-//            		return Json.createObjectBuilder().add("error", "vous devez selectionner un docteur").build();
-//            	} ; 
-            	r.setPatient(patient);
-            	r.setState(State.waiting);
-            }
+
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
@@ -273,18 +265,5 @@ public class userService implements IuserServiceLocal, IuserServiceRemote {
 			return false;
 		}
 	}
-	
-	@Override
-	public boolean deletePatientById(int id) {
-		try {
-			Patient p = em.find(Patient.class, id) ; 
-			p.getListeRendezVous().clear();
-			em.remove(p);
-			return true;
-		} catch (NoResultException e) {
-			return false;
-		}
-	}
-	
 
 }

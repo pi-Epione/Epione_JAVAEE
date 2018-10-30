@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -166,14 +165,6 @@ public class userJAXRS {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteDoctorById(@QueryParam(value="idDoctor") int idDoctor) {
 		return Response.ok(userService.deleteDoctorById(idDoctor)).build();
-	}
-	
-	/************************ done ************************/
-	@Path("patient")
-	@DELETE
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response deletePatientById(@QueryParam(value="patientId") int patientId) {
-		return Response.ok(userService.deletePatientById(patientId)).build();
 	}
 
 	@Path("token")
