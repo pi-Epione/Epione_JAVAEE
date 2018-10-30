@@ -59,7 +59,7 @@ public class Doctor extends User implements Serializable {
 	private List<TarifDoctor> tarifs = new ArrayList<>();
 	
 
-	// ******************** M ***********************///
+	// ******************** M ***************************///
 	@OneToMany(mappedBy = "doctor")
 	private List<NotePatient> notes  = new ArrayList<>();
 	@OneToMany(mappedBy = "doctor")
