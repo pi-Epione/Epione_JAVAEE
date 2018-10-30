@@ -41,49 +41,7 @@ public class doctorService implements IdoctorServiceLocal, IdoctorServiceRemote 
 	@EJB
 	IuserServiceLocal userservice;
 
-	@Override
-	public List<Doctor> getDoctorBySpeciality(String specialite) {
-		List<Doctor> listdoctors = em
-				.createQuery("select d from Doctor d where d.specialite =:specialite", Doctor.class)
-				.setParameter("specialite", specialite).getResultList();
-
-		return listdoctors;
-	}
-
-	@Override
-	public List<Doctor> getDoctorsDisponible() {
-		List<Doctor> listDoctorsDisponible = new ArrayList<>();
-		List<Doctor> listDoctors = em.createQuery("select d from Doctor d", Doctor.class).getResultList();
-		for (Doctor doctor : listDoctors) {
-			Calendrier calendrier = em
-					.createQuery("select c from  Calendrier c where c.doctor = doctor", Calendrier.class)
-					.setParameter("doctor", doctor).getSingleResult();
-			for (Journee journee : calendrier.getListJournees()) {
-				// ************************************************************************************//
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public List<Doctor> getDoctorsBySpeciliteDisponible() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Doctor> getDoctorByLocation(Adresse adresse) {
-		List<Doctor> listDoctorsByAdresse = new ArrayList<>();
-		List<Doctor> listDoctors = em.createQuery("select d from Doctor d", Doctor.class).getResultList();
-		for (Doctor doctor : listDoctors) {
-			if (doctor.getAdresse().getVille() == adresse.getVille()
-					|| doctor.getAdresse().getRue() == adresse.getRue()) {
-				listDoctorsByAdresse.add(doctor);
-			}
-		}
-		return listDoctors;
-	}
-
+	
 	@Override
 	public JsonObject addMotif(MotifDoctor motif) {
 		em.persist(motif);
@@ -129,7 +87,7 @@ public class doctorService implements IdoctorServiceLocal, IdoctorServiceRemote 
 	public MotifDoctor getMotifById(int idMotif) {
 		return em.find(MotifDoctor.class, idMotif);
 	}
-
+	
 	@Override
 	public JsonObject initialCalendar(int idDoctor) {
 		Doctor doctor = em.find(Doctor.class, idDoctor);
@@ -142,6 +100,82 @@ public class doctorService implements IdoctorServiceLocal, IdoctorServiceRemote 
 
 		return Json.createObjectBuilder().add("success", "intialiser").build();
 	}
+	
+	@Override
+	public Calendrier getCalendar(int idDoctor) {
+		Doctor doctor = em.find(Doctor.class, idDoctor);
+		Calendrier calendrier = em.createQuery("select c from Calendrier c where c.doctor = :doctor", Calendrier.class)
+				.setParameter("doctor", doctor).getSingleResult();
+
+		return calendrier;
+	}
+	
+	@Override
+	public List<Doctor> getDoctorBySpeciality(String specialite) {
+		List<Doctor> listdoctors = em
+				.createQuery("select d from Doctor d where d.specialite =:specialite", Doctor.class)
+				.setParameter("specialite", specialite).getResultList();
+
+		return listdoctors;
+	}
+
+	@Override
+	public List<Doctor> getDoctorsDisponibleByDate(Date date) {
+		Calendar dateFromUser = Calendar.getInstance();
+		dateFromUser.setTime(date);
+		List<Doctor> listDoctorsDisponible = new ArrayList<>();
+		List<Doctor> listDoctors = em.createQuery("select d from Doctor d", Doctor.class).getResultList();
+		for (Doctor doctor : listDoctors) {
+
+			try {
+				Calendrier calendrier = em
+						.createQuery("select c from  Calendrier c where c.doctor = :doctor", Calendrier.class)
+						.setParameter("doctor", doctor).getSingleResult();
+
+				for (Journee journee : calendrier.getListJournees()) {
+					boolean test = false;
+					Calendar dateFromJournee = Calendar.getInstance();
+					dateFromJournee.setTime(journee.getDate());
+
+					if (dateFromUser.get(Calendar.YEAR) == dateFromJournee.get(Calendar.YEAR)
+							&& dateFromUser.get(Calendar.MONTH) == dateFromJournee.get(Calendar.MONTH)
+							&& dateFromUser.get(Calendar.DAY_OF_MONTH) == dateFromJournee.get(Calendar.DAY_OF_MONTH)) {
+
+						List<Horaires> listHoraires = journee.getListHoraires();
+						for (Horaires horaire : listHoraires) {
+							if (horaire.getDisponible()) {
+								listDoctorsDisponible.add(doctor);
+							}
+							test = true;
+							break;
+						}
+					}
+					if (test)
+						break;
+				}
+
+			} catch (NoResultException e) {
+
+			}
+
+		}
+		return listDoctorsDisponible;
+	}
+
+	@Override
+	public List<Doctor> getDoctorByLocation(Adresse adresse) {
+		List<Doctor> listDoctorsByAdresse = new ArrayList<>();
+		List<Doctor> listDoctors = em.createQuery("select d from Doctor d", Doctor.class).getResultList();
+		for (Doctor doctor : listDoctors) {
+			if (doctor.getAdresse().getVille() == adresse.getVille()
+					|| doctor.getAdresse().getRue() == adresse.getRue()) {
+				listDoctorsByAdresse.add(doctor);
+			}
+		}
+		return listDoctors;
+	}
+
+	
 
 	@Override
 	public JsonObject addJournee(int id, Date date, HashMap<Integer, Integer> listHorairesPerso) {
@@ -159,7 +193,7 @@ public class doctorService implements IdoctorServiceLocal, IdoctorServiceRemote 
 				return Json.createObjectBuilder().add("error", "date invalide elle existe deja").build();
 			}
 		}
-		
+
 		Calendar nowDate = Calendar.getInstance();
 		nowDate.setTime(new Date());
 		Calendar newDate = Calendar.getInstance();
@@ -206,18 +240,43 @@ public class doctorService implements IdoctorServiceLocal, IdoctorServiceRemote 
 						em.remove(horaires);
 					else
 						return false;
-
 				}
-
 				em.remove(journee);
 			} else {
 				listJourneeNV.add(journee);
 			}
-
 		}
-
 		calendrier.setListJournees(listJourneeNV);
 		return true;
+	}
+	
+	@Override
+	public boolean deleteHoraires(int idDoctor, Date date) {
+		Calendar dateFromUser = Calendar.getInstance();
+		Doctor doctor = em.find(Doctor.class, idDoctor);
+		Calendrier calendrier = em.createQuery("select c from Calendrier c where c.doctor = :doctor", Calendrier.class)
+				.setParameter("doctor", doctor).getSingleResult();
+		List<Journee> listJournees = calendrier.getListJournees();
+		for (Journee journee : listJournees) {
+			Calendar c = Calendar.getInstance();
+			c.setTime(journee.getDate());
+			if (c.get(Calendar.YEAR) == dateFromUser.get(Calendar.YEAR)
+					&& c.get(Calendar.MONTH) == dateFromUser.get(Calendar.MONTH)
+					&& c.get(Calendar.DAY_OF_MONTH) == dateFromUser.get(Calendar.DAY_OF_MONTH)) {
+				List<Horaires> listHoraires = journee.getListHoraires();
+				for (Horaires horaire : listHoraires) {
+					c.setTime(horaire.getTime());
+					if (c.get(Calendar.HOUR_OF_DAY) == dateFromUser.get(Calendar.HOUR_OF_DAY)
+							&& c.get(Calendar.MINUTE) == dateFromUser.get(Calendar.MINUTE) && horaire.getDisponible()) {
+						horaire.setJournee(null);
+						em.remove(horaire);
+						return true;
+					}
+				}
+			}
+
+		}
+		return false;
 	}
 
 	@Override
@@ -350,42 +409,54 @@ public class doctorService implements IdoctorServiceLocal, IdoctorServiceRemote 
 		return listHoraires;
 	}
 
+
+
+	
+
 	@Override
-	public boolean deleteHoraires(int idDoctor, Date date) {
-		Calendar dateFromUser = Calendar.getInstance();
-		Doctor doctor = em.find(Doctor.class, idDoctor);
-		Calendrier calendrier = em.createQuery("select c from Calendrier c where c.doctor = :doctor", Calendrier.class)
-				.setParameter("doctor", doctor).getSingleResult();
-		List<Journee> listJournees = calendrier.getListJournees();
-		for (Journee journee : listJournees) {
-			Calendar c = Calendar.getInstance();
-			c.setTime(journee.getDate());
-			if (c.get(Calendar.YEAR) == dateFromUser.get(Calendar.YEAR)
-					&& c.get(Calendar.MONTH) == dateFromUser.get(Calendar.MONTH)
-					&& c.get(Calendar.DAY_OF_MONTH) == dateFromUser.get(Calendar.DAY_OF_MONTH)) {
-				List<Horaires> listHoraires = journee.getListHoraires();
-				for (Horaires horaire : listHoraires) {
-					c.setTime(horaire.getTime());
-					if (c.get(Calendar.HOUR_OF_DAY) == dateFromUser.get(Calendar.HOUR_OF_DAY)
-							&& c.get(Calendar.MINUTE) == dateFromUser.get(Calendar.MINUTE) && horaire.getDisponible()) {
-						horaire.setJournee(null);
-						em.remove(horaire);
-						return true;
+	public JsonObject updateJournee(int idDoctor, Date date, HashMap<Integer, Integer> listHorairesPerso) {
+		/*Doctor doctor = em.find(Doctor.class, idDoctor);
+		if(getJourneeByDate(doctor, date) != null){
+			List<Horaires> listhoraires = getJourneeByDate(doctor, date).getListHoraires();
+			for (Map.Entry mapentry : listHorairesPerso.entrySet()) {
+				Calendar timeFromUser = Calendar.getInstance();
+				timeFromUser.set(Calendar.HOUR_OF_DAY, (int)mapentry.getKey());
+				timeFromUser.set(Calendar.MINUTE, (int)mapentry.getValue());
+				for(Horaires horaire : listhoraires){
+					Calendar timeFromHoraire = Calendar.getInstance();
+					if(timeFromUser.get(Calendar.HOUR_OF_DAY) == timeFromHoraire.get(Calendar.HOUR_OF_DAY) 
+							&& timeFromUser.get(Calendar.MINUTE) == timeFromHoraire.get(Calendar.MINUTE) && !horaire.getDisponible()){
+						
 					}
 				}
 			}
-
-		}
-		return false;
+			
+		}*/
+		return null;
 	}
 
-	@Override
-	public Calendrier getCalendar(int idDoctor) {
-		Doctor doctor = em.find(Doctor.class, idDoctor);
-		Calendrier calendrier = em.createQuery("select c from Calendrier c where c.doctor = :doctor", Calendrier.class)
-				.setParameter("doctor", doctor).getSingleResult();
+	public Journee getJourneeByDate(Doctor doctor, Date date) {
+		Calendar dateFromUser = Calendar.getInstance();
+		dateFromUser.setTime(date);
+		try {
+			Calendrier calendrier = em
+					.createQuery("select c from Calendrier c where c.doctor =:doctor", Calendrier.class)
+					.setParameter("doctor", doctor).getSingleResult();
+			for(Journee journee : calendrier.getListJournees()){
+				Calendar dateFromJournee = Calendar.getInstance();
+				dateFromJournee.setTime(journee.getDate());
+				if (dateFromUser.get(Calendar.YEAR) == dateFromJournee.get(Calendar.YEAR)
+						&& dateFromUser.get(Calendar.MONTH) == dateFromJournee.get(Calendar.MONTH)
+						&& dateFromUser.get(Calendar.DAY_OF_MONTH) == dateFromJournee.get(Calendar.DAY_OF_MONTH)){
+					return journee;
+				}
+			}
+			
+		} catch (NoResultException e) {
+			return null;
+		}
 
-		return calendrier;
+		return null;
 	}
 
 }

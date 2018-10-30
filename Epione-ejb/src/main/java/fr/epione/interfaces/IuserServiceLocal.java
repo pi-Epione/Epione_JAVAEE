@@ -22,12 +22,12 @@ public interface IuserServiceLocal {
 	List<User> getUsersEnable();
 	Boolean isConnectedUser(int idUser);
 	JsonObject logIn(String email,String password,Device device);
-	JsonObject logOut(int idUser);
+	JsonObject logOut(HttpServletRequest req,int idUser);
 	JsonObject signInDoctor(Doctor doctor);
 	JsonObject signInPatient(Patient patient);
 	int getIdUser(HttpServletRequest req);
 	boolean checkConnectedDevice(String host,String os,String browser,User user);
-	boolean logOutFromDevice(int id);
+	boolean logOutFromDevice(HttpServletRequest req ,int id);
 	boolean deleteDoctorById(int id);
 	
 	

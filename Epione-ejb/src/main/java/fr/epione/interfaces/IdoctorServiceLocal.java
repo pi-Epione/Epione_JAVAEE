@@ -24,6 +24,8 @@ public interface IdoctorServiceLocal {
 	JsonObject initialCalendar(int idDoctor);
 
 	JsonObject addJournee(int id, Date date, HashMap<Integer, Integer> listHorairesPerso);
+	
+	JsonObject updateJournee(int idDoctor,Date date,HashMap<Integer, Integer> listHorairesPerso);
 
 	MotifDoctor getMotifById(int idMotif);
 
@@ -36,14 +38,15 @@ public interface IdoctorServiceLocal {
 	List<MotifDoctor> getAllMotifs();
 
 	boolean deleteJournee(int id, Date date);
+	
+	
 
 	List<Horaires> getHorairesJournees(int id, Date date);
 
 	List<Doctor> getDoctorBySpeciality(String specialite);
 
-	List<Doctor> getDoctorsDisponible();
+	List<Doctor> getDoctorsDisponibleByDate(Date date);
 
-	List<Doctor> getDoctorsBySpeciliteDisponible();
 
 	List<Doctor> getDoctorByLocation(Adresse adresse);
 

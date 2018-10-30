@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.crypto.spec.SecretKeySpec;
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.Json;
@@ -42,7 +43,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @RequestScoped
 public class userJAXRS {
 
-	@Inject
+	@EJB
 	IuserServiceLocal userService;
 	@Context
 	private UriInfo uriInfo;
@@ -122,10 +123,10 @@ public class userJAXRS {
 	@Path("logOut")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response logOut(@Context HttpServletRequest req, @Context HttpServletResponse resp) {
+	public Response logOut(@Context HttpServletRequest req) {
 
-		JsonObject json = userService.logOut(Utils.getIdUserFromSession(req));
-		userService.logOutFromDevice(Utils.getIdUserFromSession(req));
+		JsonObject json = userService.logOut(req,Utils.getIdUserFromSession(req));
+		userService.logOutFromDevice(req,Utils.getIdUserFromSession(req));
 		Utils.destroySession(req);
 
 		return Response.ok(json).build();

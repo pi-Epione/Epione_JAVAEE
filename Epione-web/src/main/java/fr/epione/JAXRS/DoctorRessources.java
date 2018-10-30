@@ -97,6 +97,21 @@ public class DoctorRessources {
 		return Response.ok(entity).build();
 	}
 	
+	@Path("getDoctorsDisponible")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDoctorsDisponibleByDate(@QueryParam(value="date")Date date) {
+		List<Doctor> listDoctors = doctorService.getDoctorsDisponibleByDate(date);
+		if(listDoctors.size()!=0){
+			GenericEntity<List<Doctor>> entity = new GenericEntity<List<Doctor>>(listDoctors) {
+			};
+			return Response.ok(entity).build();
+		}else{
+			return Response.ok("Pas de doctor disponible").build();
+		}
+		
+	}
+	
 	@Path("getCalendar")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
