@@ -13,13 +13,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-<<<<<<< HEAD
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
-=======
->>>>>>> e4bc19a7515bebac77fe697382ef9303a13fa6d8
 @Entity
 public class RendezVous implements Serializable{
 
@@ -31,20 +28,17 @@ public class RendezVous implements Serializable{
 	private Date date ; 
 	private int heureDebut ; 
 	private int heureFin ;
-	/*private int order;*/
 	private boolean etat ;
 	private String reason;
 	@Enumerated(EnumType.STRING)
 	private State state;
 	
 	
-
-	
 	@ManyToOne
 	private Patient patient ;
 	
 	/*association parcoursrdv*/
-	@ManyToOne()
+	@ManyToOne
 	private Parcours parcours ;
 	@ManyToOne
 	private MotifDoctor motif ; 
@@ -79,9 +73,8 @@ public class RendezVous implements Serializable{
 	public void setDate(Date date) {
 		this.date = date;
 	}
-<<<<<<< HEAD
-	@JsonIgnore
-=======
+
+	
 	public int getHeureDebut() {
 		return heureDebut;
 	}
@@ -100,7 +93,7 @@ public class RendezVous implements Serializable{
 	public void setEtat(boolean etat) {
 		this.etat = etat;
 	}
->>>>>>> e4bc19a7515bebac77fe697382ef9303a13fa6d8
+	@JsonIgnore
 	public Patient getPatient() {
 		return patient;
 	}
@@ -108,6 +101,7 @@ public class RendezVous implements Serializable{
 	public void setPatient(Patient patient) {
 		this.patient = patient;
 	}
+	@JsonIgnore
 	public MotifDoctor getMotif() {
 		return motif;
 	}
@@ -115,6 +109,7 @@ public class RendezVous implements Serializable{
 	public void setMotif(MotifDoctor motif) {
 		this.motif = motif;
 	}
+	@JsonIgnore
 	public Doctor getMedecin() {
 		return Medecin;
 	}
@@ -136,12 +131,7 @@ public class RendezVous implements Serializable{
 	public void setState(State state) {
 		this.state = state;
 	}
-/*	public int getOrder() {
-		return order;
-	}
-	public void setOrder(int order) {
-		this.order = order;
-	}*/
+
 	@Override
 	public String toString() {
 		return "RendezVous [date=" + date + ", heureDebut=" + heureDebut + ", heureFin=" + heureFin + ", etat=" + etat

@@ -19,39 +19,29 @@ public class Patient extends User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Adresse adresse;
-<<<<<<< HEAD
-	@OneToMany(fetch = FetchType.EAGER,mappedBy = "patient", cascade=CascadeType.PERSIST)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "patient", cascade=CascadeType.PERSIST)
 	private List<RendezVous> listeRendezVous ;
 	@OneToMany(fetch = FetchType.EAGER,mappedBy = "patient")
 	private List<Message> messages ; 
-=======
+
 	
 	// association parcours patient
 		@OneToOne
-		private Parcours parcours ;
-	@OneToMany(fetch = FetchType.EAGER,mappedBy = "patient")
-	private List<RendezVous> listeRendezVous = new ArrayList<>();
+	private Parcours parcours ;
 	@OneToMany(fetch = FetchType.EAGER,mappedBy = "patient")
 	private List<NotePatient> notes  = new ArrayList<>();
 	@OneToMany(fetch = FetchType.EAGER,mappedBy = "patient")
 	private List<Chat> chats  = new ArrayList<>();
 
->>>>>>> e4bc19a7515bebac77fe697382ef9303a13fa6d8
-	
 	public List<Message> getMessages() {
 		return messages;
 	}
-
 	public void setMessages(List<Message> messages) {
 		this.messages = messages;
 	}
 
 	public void setListeRendezVous(List<RendezVous> listeRendezVous) {
 		this.listeRendezVous = listeRendezVous;
-	}
-	
-	public List<RendezVous> getListeRendezVous(){
-		return listeRendezVous ; 
 	}
 
 	public Patient() {

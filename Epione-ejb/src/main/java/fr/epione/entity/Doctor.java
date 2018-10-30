@@ -42,9 +42,9 @@ public class Doctor extends User implements Serializable {
 	@OneToMany(mappedBy = "doctor")
 	private List<Parcours> parcours = new ArrayList<>();
 	
-	@OneToMany(fetch = FetchType.EAGER,mappedBy = "Medecin")
-<<<<<<< HEAD
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "Medecin", cascade= CascadeType.REMOVE)
 	private List<RendezVous> listeRendezVous ;
+	
 	public List<RendezVous> getListeRendezVous() {
 		return listeRendezVous;
 	}
@@ -53,11 +53,7 @@ public class Doctor extends User implements Serializable {
 		this.listeRendezVous = listeRendezVous;
 	}
 
-	@OneToMany
-=======
-	private List<RendezVous> listeRendezVous = new ArrayList<>();
 	@OneToMany(fetch=FetchType.EAGER , cascade= CascadeType.REMOVE)
->>>>>>> e4bc19a7515bebac77fe697382ef9303a13fa6d8
 	private List<ExpertiseDoctor> expertises = new ArrayList<>(); 
 	@OneToMany(fetch=FetchType.EAGER)
 	private List<MotifDoctor> listMotifs = new ArrayList<>();
@@ -70,22 +66,15 @@ public class Doctor extends User implements Serializable {
 
 	@OneToMany(cascade= {CascadeType.PERSIST,CascadeType.REMOVE},fetch=FetchType.EAGER)
 	private List<TarifDoctor> tarifs = new ArrayList<>();
-<<<<<<< HEAD
 	@OneToMany(fetch = FetchType.EAGER,mappedBy = "doctor")
 	private List<Message> messages ;
-    
-	// ******************** M ***********************///
 	
-=======
 	
-
 	// ******************** M ***************************///
 	@OneToMany(mappedBy = "doctor")
 	private List<NotePatient> notes  = new ArrayList<>();
 	@OneToMany(mappedBy = "doctor")
 	private List<Chat> chats  = new ArrayList<>();
->>>>>>> e4bc19a7515bebac77fe697382ef9303a13fa6d8
-
 	public Doctor() {
 
 	}
@@ -186,7 +175,6 @@ public class Doctor extends User implements Serializable {
 		this.expertises = expertises;
 	}
 
-<<<<<<< HEAD
 	public List<Message> getMessages() {
 		return messages;
 	}
@@ -195,15 +183,13 @@ public class Doctor extends User implements Serializable {
 		this.messages = messages;
 	}
 	
-=======
 	@Override
 	public String toString() {
 		return "Doctor [specialite=" + specialite + ", presentation=" + presentation + ", adresse=" + adresse
 				+ ", doctolib=" + doctolib + ", expertises=" + expertises + ", formations=" + formations + ", tarifs="
 				+ tarifs + "]";
 	}
->>>>>>> e4bc19a7515bebac77fe697382ef9303a13fa6d8
-	
+
 	
 
 
