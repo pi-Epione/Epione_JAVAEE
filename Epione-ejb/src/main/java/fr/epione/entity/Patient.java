@@ -42,6 +42,19 @@ public class Patient extends User implements Serializable {
 		this.adresse = adresse;
 	}
 
+	
+	public Parcours getParcours() {
+		return parcours;
+	}
+
+	public void setParcours(Parcours parcours) {
+		this.parcours = parcours;
+	}
+
+	public List<RendezVous> getListeRendezVous() {
+		return listeRendezVous;
+	}
+
 	public Patient(String nom, String prenom, String email, Adresse adresse, int telephone, Date dateDeNaissance,
 			String motDePasse, List<RendezVous> listeRendezVous) {
 		super(nom, prenom, email, telephone, dateDeNaissance, motDePasse);
