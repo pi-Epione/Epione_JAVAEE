@@ -28,5 +28,6 @@ public interface IDoctorServiceLocal {
 	List<Doctor> getAllDoctors() ;
 	int deleteDemande(DemandeDoctolib demande) ; 
 	Boolean deleteDoctor(Doctor doctor);
+	double DoctolibPercentage() ; 
 
 }
