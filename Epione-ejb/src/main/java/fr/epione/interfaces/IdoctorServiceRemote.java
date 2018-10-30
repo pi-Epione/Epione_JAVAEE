@@ -22,6 +22,8 @@ public interface IdoctorServiceRemote {
 	JsonObject initialCalendar(int idDoctor);
 
 	JsonObject addJournee(int id, Date date, HashMap<Integer, Integer> listHorairesPerso);
+	
+	JsonObject updateJournee(int idDoctor,Date date,HashMap<Integer, Integer> listHorairesPerso);
 
 	MotifDoctor getMotifById(int idMotif);
 
@@ -39,9 +41,7 @@ public interface IdoctorServiceRemote {
 
 	List<Doctor> getDoctorBySpeciality(String specialite);
 
-	List<Doctor> getDoctorsDisponible();
-
-	List<Doctor> getDoctorsBySpeciliteDisponible();
+	List<Doctor> getDoctorsDisponibleByDate(Date date);
 
 	List<Doctor> getDoctorByLocation(Adresse adresse);
 	

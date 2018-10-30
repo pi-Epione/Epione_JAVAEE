@@ -15,10 +15,7 @@ public class DemandeDoctolib {
 	private String lastName ;
 	private String specialite; 
 	private String ville ;
-	private String email ;
-	
-	
-	
+	private String email;
 	
 	
 	public DemandeDoctolib() {
@@ -54,6 +51,9 @@ public class DemandeDoctolib {
 	public void setVille(String ville) {
 		this.ville = ville;
 	}
+	
+	
+	
 	public String getEmail() {
 		return email;
 	}
@@ -63,11 +63,10 @@ public class DemandeDoctolib {
 	@Override
 	public String toString() {
 		return "DemandeDoctolib [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", specialite="
-				+ specialite + ", ville=" + ville + ", email=" + email + "]";
-	}
+				+ specialite + ", ville=" + ville + "]";
+	} 
 	
 	
-
 	
 	
 }

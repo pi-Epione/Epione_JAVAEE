@@ -40,7 +40,7 @@ public class Doctor extends User implements Serializable {
 
 	@OneToMany(fetch = FetchType.EAGER,mappedBy = "Medecin")
 	private List<RendezVous> listeRendezVous = new ArrayList<>();
-	@OneToMany(fetch=FetchType.EAGER)
+	@OneToMany(fetch=FetchType.EAGER , cascade= CascadeType.REMOVE)
 	private List<ExpertiseDoctor> expertises = new ArrayList<>(); 
 	@OneToMany(fetch=FetchType.EAGER)
 	private List<MotifDoctor> listMotifs = new ArrayList<>();
@@ -48,10 +48,10 @@ public class Doctor extends User implements Serializable {
 	private List<LangueDoctor> langues = new ArrayList<>();
 	@OneToMany(fetch=FetchType.EAGER)
 	private List<ExerciceDoctor> exercices = new ArrayList<>();
-	@OneToMany(fetch=FetchType.EAGER)
+	@OneToMany(fetch=FetchType.EAGER , cascade= CascadeType.REMOVE)
 	private List<FormationDoctor> formations = new ArrayList<>();
 
-	@OneToMany(cascade=CascadeType.PERSIST,fetch=FetchType.EAGER)
+	@OneToMany(cascade= {CascadeType.PERSIST,CascadeType.REMOVE},fetch=FetchType.EAGER)
 	private List<TarifDoctor> tarifs = new ArrayList<>();
 	
 
