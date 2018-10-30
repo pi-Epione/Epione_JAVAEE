@@ -15,7 +15,10 @@ public class DemandeDoctolib {
 	private String lastName ;
 	private String specialite; 
 	private String ville ;
+<<<<<<< HEAD
 	private String email;
+=======
+>>>>>>> a9d9caf84f30ca383256ca956035502bf13b16e9
 	
 	
 	public DemandeDoctolib() {
@@ -51,6 +54,7 @@ public class DemandeDoctolib {
 	public void setVille(String ville) {
 		this.ville = ville;
 	}
+<<<<<<< HEAD
 	
 	
 	
@@ -60,6 +64,8 @@ public class DemandeDoctolib {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+=======
+>>>>>>> a9d9caf84f30ca383256ca956035502bf13b16e9
 	@Override
 	public String toString() {
 		return "DemandeDoctolib [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", specialite="

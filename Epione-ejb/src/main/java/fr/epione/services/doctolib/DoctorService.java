@@ -5,19 +5,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.regex.Pattern;
 
 import javax.ejb.Stateless;
-import javax.mail.Message;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -57,6 +50,7 @@ public class DoctorService implements IDoctorServiceLocal,IDoctorServiceRemote {
 			doctor.setPassword(Utils.toMD5(password));
 		
 		em.persist(doctor);
+<<<<<<< HEAD
 		sendMail(doctor.getEmail(),password);
 		return doctor.getId();
 		
@@ -67,6 +61,9 @@ public class DoctorService implements IDoctorServiceLocal,IDoctorServiceRemote {
 		}
 		}
 		
+=======
+		return doctor.getId();
+>>>>>>> a9d9caf84f30ca383256ca956035502bf13b16e9
 	}
 
 	@Override
@@ -206,6 +203,7 @@ public class DoctorService implements IDoctorServiceLocal,IDoctorServiceRemote {
 	}
 	
 	
+<<<<<<< HEAD
 public void sendMail(String email,String generatedPassword)
 {
 	 try{
@@ -312,5 +310,8 @@ public Doctor getDoctorByEmail(String email) {
 }
 
 
+=======
+	
+>>>>>>> a9d9caf84f30ca383256ca956035502bf13b16e9
 
 }

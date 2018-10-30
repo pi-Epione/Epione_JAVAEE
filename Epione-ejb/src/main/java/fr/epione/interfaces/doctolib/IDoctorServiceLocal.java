@@ -26,6 +26,9 @@ public interface IDoctorServiceLocal {
 	void AffecterExpertise(List<ExpertiseDoctor> liste , Doctor doctor ) ;
 	void affecterFormations(List<FormationDoctor> liste , Doctor doctor ) ;
 	List<Doctor> getAllDoctors() ;
+<<<<<<< HEAD
 	int deleteDemande(DemandeDoctolib demande) ; 
 	Boolean deleteDoctor(Doctor doctor);
+=======
+>>>>>>> a9d9caf84f30ca383256ca956035502bf13b16e9
 }
