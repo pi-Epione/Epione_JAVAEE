@@ -1,5 +1,6 @@
 package fr.epione.entity;
 
+import javax.jms.JMSSessionMode;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -11,13 +12,15 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-
 @Table(name = "doctor")
 public class Doctor extends User implements Serializable {
 
@@ -34,24 +37,54 @@ public class Doctor extends User implements Serializable {
 	private Adresse adresse;
 	private Boolean doctolib ;
 
+
+	/*association docteur parcours*/
+	@OneToMany(mappedBy = "doctor")
+	private List<Parcours> parcours = new ArrayList<>();
+	
 	@OneToMany(fetch = FetchType.EAGER,mappedBy = "Medecin")
-	private List<RendezVous> listeRendezVous = new ArrayList<>();
+<<<<<<< HEAD
+	private List<RendezVous> listeRendezVous ;
+	public List<RendezVous> getListeRendezVous() {
+		return listeRendezVous;
+	}
+
+	public void setListeRendezVous(List<RendezVous> listeRendezVous) {
+		this.listeRendezVous = listeRendezVous;
+	}
+
 	@OneToMany
+=======
+	private List<RendezVous> listeRendezVous = new ArrayList<>();
+	@OneToMany(fetch=FetchType.EAGER , cascade= CascadeType.REMOVE)
+>>>>>>> e4bc19a7515bebac77fe697382ef9303a13fa6d8
 	private List<ExpertiseDoctor> expertises = new ArrayList<>(); 
 	@OneToMany(fetch=FetchType.EAGER)
 	private List<MotifDoctor> listMotifs = new ArrayList<>();
-	@OneToMany
+	@OneToMany(fetch=FetchType.EAGER)
 	private List<LangueDoctor> langues = new ArrayList<>();
-	@OneToMany
+	@OneToMany(fetch=FetchType.EAGER)
 	private List<ExerciceDoctor> exercices = new ArrayList<>();
-	@OneToMany
+	@OneToMany(fetch=FetchType.EAGER , cascade= CascadeType.REMOVE)
 	private List<FormationDoctor> formations = new ArrayList<>();
-	@OneToMany(cascade=CascadeType.PERSIST)
-	private List<TarifDoctor> tarifs = new ArrayList<>();
-	
 
+	@OneToMany(cascade= {CascadeType.PERSIST,CascadeType.REMOVE},fetch=FetchType.EAGER)
+	private List<TarifDoctor> tarifs = new ArrayList<>();
+<<<<<<< HEAD
+	@OneToMany(fetch = FetchType.EAGER,mappedBy = "doctor")
+	private List<Message> messages ;
+    
 	// ******************** M ***********************///
 	
+=======
+	
+
+	// ******************** M ***************************///
+	@OneToMany(mappedBy = "doctor")
+	private List<NotePatient> notes  = new ArrayList<>();
+	@OneToMany(mappedBy = "doctor")
+	private List<Chat> chats  = new ArrayList<>();
+>>>>>>> e4bc19a7515bebac77fe697382ef9303a13fa6d8
 
 	public Doctor() {
 
@@ -152,6 +185,24 @@ public class Doctor extends User implements Serializable {
 	public void setExpertises(List<ExpertiseDoctor> expertises) {
 		this.expertises = expertises;
 	}
+
+<<<<<<< HEAD
+	public List<Message> getMessages() {
+		return messages;
+	}
+
+	public void setMessages(List<Message> messages) {
+		this.messages = messages;
+	}
+	
+=======
+	@Override
+	public String toString() {
+		return "Doctor [specialite=" + specialite + ", presentation=" + presentation + ", adresse=" + adresse
+				+ ", doctolib=" + doctolib + ", expertises=" + expertises + ", formations=" + formations + ", tarifs="
+				+ tarifs + "]";
+	}
+>>>>>>> e4bc19a7515bebac77fe697382ef9303a13fa6d8
 	
 	
 

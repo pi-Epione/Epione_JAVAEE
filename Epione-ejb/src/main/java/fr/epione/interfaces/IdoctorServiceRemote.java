@@ -7,6 +7,12 @@ import java.util.List;
 
 import javax.ejb.Remote;
 import javax.json.JsonObject;
+
+import fr.epione.entity.Adresse;
+import fr.epione.entity.Calendrier;
+import fr.epione.entity.Doctor;
+import fr.epione.entity.Horaires;
+import fr.epione.entity.Journee;
 import fr.epione.entity.MotifDoctor;
 
 @Remote
@@ -15,7 +21,9 @@ public interface IdoctorServiceRemote {
 
 	JsonObject initialCalendar(int idDoctor);
 
-	JsonObject updateCalendar(int id, Date date, HashMap<Integer, Integer> listHorairesPerso);
+	JsonObject addJournee(int id, Date date, HashMap<Integer, Integer> listHorairesPerso);
+	
+	JsonObject updateJournee(int idDoctor,Date date,HashMap<Integer, Integer> listHorairesPerso);
 
 	MotifDoctor getMotifById(int idMotif);
 
@@ -27,5 +35,17 @@ public interface IdoctorServiceRemote {
 
 	List<MotifDoctor> getAllMotifs();
 
-	boolean deleteJournee(int id,Date date);
+	boolean deleteJournee(int id, Date date);
+
+	List<Horaires> getHorairesJournees(int id, Date date);
+
+	List<Doctor> getDoctorBySpeciality(String specialite);
+
+	List<Doctor> getDoctorsDisponibleByDate(Date date);
+
+	List<Doctor> getDoctorByLocation(Adresse adresse);
+	
+	boolean deleteHoraires(int idDoctor,Date date);
+	
+	Calendrier getCalendar(int idDoctor);
 }

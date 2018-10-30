@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.crypto.spec.SecretKeySpec;
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.Json;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -42,7 +44,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @RequestScoped
 public class userJAXRS {
 
-	@Inject
+	@EJB
 	IuserServiceLocal userService;
 	@Context
 	private UriInfo uriInfo;
@@ -122,10 +124,10 @@ public class userJAXRS {
 	@Path("logOut")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response logOut(@Context HttpServletRequest req, @Context HttpServletResponse resp) {
+	public Response logOut(@Context HttpServletRequest req) {
 
-		JsonObject json = userService.logOut(Utils.getIdUserFromSession(req));
-		userService.logOutFromDevice(Utils.getIdUserFromSession(req));
+		JsonObject json = userService.logOut(req,Utils.getIdUserFromSession(req));
+		userService.logOutFromDevice(req,Utils.getIdUserFromSession(req));
 		Utils.destroySession(req);
 
 		return Response.ok(json).build();
@@ -164,6 +166,14 @@ public class userJAXRS {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteDoctorById(@QueryParam(value="idDoctor") int idDoctor) {
 		return Response.ok(userService.deleteDoctorById(idDoctor)).build();
+	}
+	
+	/************************ done ************************/
+	@Path("patient")
+	@DELETE
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deletePatientById(@QueryParam(value="patientId") int patientId) {
+		return Response.ok(userService.deletePatientById(patientId)).build();
 	}
 
 	@Path("token")

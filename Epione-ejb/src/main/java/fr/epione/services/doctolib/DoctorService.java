@@ -1,14 +1,23 @@
 package fr.epione.services.doctolib;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.regex.Pattern;
 
 import javax.ejb.Stateless;
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -23,6 +32,7 @@ import fr.epione.entity.FormationDoctor;
 import fr.epione.entity.User;
 import fr.epione.interfaces.doctolib.IDoctorServiceLocal;
 import fr.epione.interfaces.doctolib.IDoctorServiceRemote;
+import fr.epione.utils.Utils;
 
 @Stateless
 public class DoctorService implements IDoctorServiceLocal,IDoctorServiceRemote {
@@ -30,13 +40,33 @@ public class DoctorService implements IDoctorServiceLocal,IDoctorServiceRemote {
 	@PersistenceContext(unitName = "epione")
 	EntityManager em;
 	ScrapServices Services ;
+	private static SecureRandom random = new SecureRandom();
+    private static final String Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    private static final String Numbers = "0123456789";	
+	
+	
 	
 	@Override
 	public int addDoctor(Doctor doctor) {
 
+		String password = generatePassword();
+		Boolean exist = checkIfDoctorExist(doctor) ;
+		if(exist) return 0 ; 
+		else {
+		try {
+			doctor.setPassword(Utils.toMD5(password));
+		
 		em.persist(doctor);
+		sendMail(doctor.getEmail(),password);
 		return doctor.getId();
-	}
+		
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return 0;
+		}
+		}
+			}
 
 	@Override
 	public List<Doctor> getDoctors() {
@@ -69,8 +99,15 @@ public class DoctorService implements IDoctorServiceLocal,IDoctorServiceRemote {
 
 	@Override
 	public int ajoutDemande(DemandeDoctolib demande) {
+		Boolean test = checkIfDemandeExist(demande) ;
+		if(test)
+		{
+			return 0;
+		}
+		else {
 		em.persist(demande);
 		return demande.getId();
+		}
 	}
 
 
@@ -175,6 +212,132 @@ public class DoctorService implements IDoctorServiceLocal,IDoctorServiceRemote {
 	}
 	
 	
+public void sendMail(String email,String generatedPassword)
+{
+	 try{
+         String host = "smtp.gmail.com";
+         String from = "medali.ayedi@esprit.tn";
+         String pass = "Medalicss1231996";
+         Properties props = System.getProperties();
+         props.put("mail.smtp.starttls.enable", "true");
+         props.put("mail.smtp.host", host);
+         props.put("mail.smtp.user", from);
+         props.put("mail.smtp.password", pass);
+         props.put("mail.smtp.port", "587");
+         props.put("mail.smtp.auth", "true");
+         String to=email ; 
+         Session session = Session.getDefaultInstance(props, null);
+         MimeMessage message = new MimeMessage(session);
+         message.setFrom(new InternetAddress(from));
+         InternetAddress toAddress = new InternetAddress(to);
+
+	   message.addRecipient(Message.RecipientType.TO, toAddress);
+    message.setSubject("Your account is successfully created");
+    message.setText("Your request has been accepted and your account is now active . Here is your email and your generated password : "
+    		+ "\n Email : "+email+" \n Password : "+generatedPassword+" \n You can always change the password after logging in .");
+    Transport transport = session.getTransport("smtp");
+    transport.connect(host, from, pass);
+    transport.sendMessage(message, message.getAllRecipients());
+    transport.close();
+}
+catch(Exception e){
+    e.getMessage();
+}
+
+}
+
+@Override
+public int deleteDemande(DemandeDoctolib demande) {
+	 if(!checkIfDemandeExist(demande)) return 0 ; 
+	 else {	 TypedQuery<DemandeDoctolib> query = em.createQuery(
+		        "SELECT c FROM DemandeDoctolib c WHERE c.email = :email", DemandeDoctolib.class);
+	 DemandeDoctolib d = query.setParameter("email", demande.getEmail()).getSingleResult();
+
+	em.remove(d);
+	return d.getId();
+	 }
+}
+
+public Boolean checkIfDemandeExist(DemandeDoctolib demande)
+{
+
+ TypedQuery<DemandeDoctolib> query = em.createQuery(
+	        "SELECT c FROM DemandeDoctolib c WHERE c.email = :email", DemandeDoctolib.class);
+int size = query.setParameter("email", demande.getEmail()).getResultList().size();
+if(size==0) return false;
+else {
+	return true;
+}
+}
 	
+
+public Boolean checkIfDoctorExist(Doctor doctor)
+{
+
+ TypedQuery<Doctor> query = em.createQuery(
+	        "SELECT d FROM Doctor d WHERE d.email = :email AND doctolib=true", Doctor.class);
+int size = query.setParameter("email", doctor.getEmail()).getResultList().size();
+if(size==0) return false;
+else {
+	return true;
+}
+}
+
+public String generatePassword()
+{
+	String result="" ;
+	String dic=Alphabet+Numbers; 
+	for (int i = 0; i < 12; i++) {
+        int index = random.nextInt(dic.length());
+        result += dic.charAt(index);
+    }
+	return result ;
+}
+
+@Override
+public Boolean deleteDoctor(Doctor doctor) {
+	Boolean test = false ; 
+	Boolean exist = checkIfDoctorExist(doctor) ;
+	System.out.println("--------------- email is : "+doctor.getEmail()+ " and exist is " +exist);
+	if(exist==true) {
+		Doctor d = getDoctorByEmail(doctor.getEmail());
+		em.remove(d); 
+		test=true;
+	}
+	System.out.println("-------------- test final = " + test);
+	return test ;
+	
+	
+}
+
+public Doctor getDoctorByEmail(String email) {
+
+	TypedQuery<Doctor> query = em.createQuery(
+	        "SELECT d FROM Doctor d WHERE d.email = :email AND doctolib=true", Doctor.class);
+
+	return query.setParameter("email", email).getSingleResult();
+}
+
+@Override
+public double DoctolibPercentage() {
+	
+	String jpql = "SELECT count(d.id) FROM Doctor d  where doctolib=true " ; 
+	Query query = em.createQuery(jpql) ; 
+	Long doctolibNumber = (Long) query.getSingleResult(); 
+	
+	
+	String jpql2 = "SELECT count(d.id) FROM Doctor d" ; 
+	Query query2 = em.createQuery(jpql2) ; 
+	Long NoDoctolibNumber = (Long) query2.getSingleResult();
+	
+	System.out.println(doctolibNumber+"--------------------------"+NoDoctolibNumber);
+
+	
+	double percentage = doctolibNumber*100/(NoDoctolibNumber) ;
+	return  percentage ;
+	
+	
+
+}
 
 }

@@ -26,4 +26,8 @@ public interface IDoctorServiceLocal {
 	void AffecterExpertise(List<ExpertiseDoctor> liste , Doctor doctor ) ;
 	void affecterFormations(List<FormationDoctor> liste , Doctor doctor ) ;
 	List<Doctor> getAllDoctors() ;
+	int deleteDemande(DemandeDoctolib demande) ; 
+	Boolean deleteDoctor(Doctor doctor);
+	double DoctolibPercentage() ; 
+
 }

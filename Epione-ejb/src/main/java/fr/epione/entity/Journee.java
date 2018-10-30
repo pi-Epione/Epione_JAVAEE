@@ -1,10 +1,12 @@
 package fr.epione.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,7 +14,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
 public class Journee implements Serializable{
 
 
@@ -22,8 +28,8 @@ public class Journee implements Serializable{
 	private int id;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
-	@OneToMany(mappedBy="journee")
-	private List<Horaires> listHoraires;
+	@OneToMany(mappedBy="journee" , fetch=FetchType.EAGER)
+	private List<Horaires> listHoraires = new ArrayList<>();
 	public int getId() {
 		return id;
 	}

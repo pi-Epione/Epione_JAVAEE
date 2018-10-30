@@ -11,7 +11,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
 public class Horaires implements Serializable{
 
 	
@@ -22,6 +27,7 @@ public class Horaires implements Serializable{
 	@Temporal(TemporalType.TIME)
 	private Date time;
 	private Boolean disponible;
+	@JsonIgnore
 	@ManyToOne
 	private Journee journee;
 

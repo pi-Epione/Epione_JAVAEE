@@ -24,6 +24,8 @@ import javax.ws.rs.core.Context;
 import fr.epione.entity.Device;
 import fr.epione.entity.Doctor;
 import fr.epione.entity.Patient;
+import fr.epione.entity.RendezVous;
+import fr.epione.entity.State;
 import fr.epione.entity.User;
 import fr.epione.interfaces.IuserServiceLocal;
 import fr.epione.interfaces.IuserServiceRemote;
@@ -92,13 +94,32 @@ public class userService implements IuserServiceLocal, IuserServiceRemote {
 	}
 
 	@Override
-	public JsonObject logOut(int idUser) {
+	public JsonObject logOut(HttpServletRequest req ,int idUser) {
 		try {
 			getUserById(idUser).setLastConnect(new Date());
 			getUserById(idUser).setConnected(Boolean.FALSE);
+			
 			return Json.createObjectBuilder().add("success", "vous etes deconnecte").build();
 		} catch (NoResultException e) {
 			return Json.createObjectBuilder().add("error", "une erreur est survenue").build();
+		}
+	}
+	
+	public void disconnectDevice(HttpServletRequest req,int idUser){
+		String tabs[] = Utils.getOsBrowserUser(req.getHeader("User-Agent"));
+		User owner = em.find(User.class, idUser);
+		String os = tabs[0];
+		String browser = tabs[1];
+		String ip = req.getRemoteAddr();
+	
+		Device device = em.createQuery("select d from Device d where d.owner = :owner",Device.class)
+				.setParameter("owner", owner)
+//				.setParameter("os", os)
+//				.setParameter("browser", browser)
+//				.setParameter("ip", ip)
+				.getSingleResult();
+		if(device != null){
+			em.remove(device);
 		}
 	}
 
@@ -157,7 +178,13 @@ public class userService implements IuserServiceLocal, IuserServiceRemote {
 			patient.setConnected(Boolean.FALSE);
 			patient.setPassword(Utils.toMD5(patient.getPassword()));
 			em.persist(patient);
-
+            for(RendezVous r : patient.getListeRendezVous()){
+//            	if(r.getMedecin()==null){
+//            		return Json.createObjectBuilder().add("error", "vous devez selectionner un docteur").build();
+//            	} ; 
+            	r.setPatient(patient);
+            	r.setState(State.waiting);
+            }
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
@@ -216,10 +243,21 @@ public class userService implements IuserServiceLocal, IuserServiceRemote {
 	}
 
 	@Override
-	public boolean logOutFromDevice(int id) {
+	public boolean logOutFromDevice(HttpServletRequest req , int id) {
+		String tabs[] = Utils.getOsBrowserUser(req.getHeader("User-Agent"));
+		
+		String os = tabs[0];
+		String browser = tabs[1];
+		String ip = req.getRemoteAddr();
+		
 		User user = em.find(User.class, id);
-		Device device = em.createQuery("select d from Device d where d.owner = :user", Device.class)
-				.setParameter("user", user).getSingleResult();
+		Device device = em.createQuery("select d from Device d where d.owner = :user"
+				+ " and d.os = :os and d.browser = :browser and d.ip = :ip", Device.class)
+				.setParameter("user", user)
+				.setParameter("os", os)
+				.setParameter("browser", browser)
+				.setParameter("ip", ip)
+				.getSingleResult();
 		em.remove(device);
 		return true;
 	}
@@ -235,5 +273,18 @@ public class userService implements IuserServiceLocal, IuserServiceRemote {
 			return false;
 		}
 	}
+	
+	@Override
+	public boolean deletePatientById(int id) {
+		try {
+			Patient p = em.find(Patient.class, id) ; 
+			p.getListeRendezVous().clear();
+			em.remove(p);
+			return true;
+		} catch (NoResultException e) {
+			return false;
+		}
+	}
+	
 
 }
