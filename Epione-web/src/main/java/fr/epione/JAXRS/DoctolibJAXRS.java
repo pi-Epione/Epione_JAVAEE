@@ -144,7 +144,6 @@ public class DoctolibJAXRS {
 		}
 	}
 	
-<<<<<<< HEAD
 	@Path("RejectDemande")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -177,6 +176,11 @@ public class DoctolibJAXRS {
 	}
 	
 	
+
+	
+	
+	
+	
 	@Path("testjoin")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -188,24 +192,7 @@ public class DoctolibJAXRS {
 
 	}
 	
-=======
 	
-	
-	
-	
-	@Path("testjoin")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response testjoin() {
-		
-		List<DemandeDoctolib> liste = DS.getDemandes();
-		GenericEntity<List<DemandeDoctolib>> entity = new GenericEntity<List<DemandeDoctolib>>(liste){};
-		return Response.ok(entity).build();
-
-	}
-	
-	
->>>>>>> a9d9caf84f30ca383256ca956035502bf13b16e9
 	
 	
 	
