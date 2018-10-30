@@ -19,6 +19,10 @@ public class Patient extends User implements Serializable {
 	private Adresse adresse;
 	@OneToMany(fetch = FetchType.EAGER,mappedBy = "patient")
 	private List<RendezVous> listeRendezVous = new ArrayList<>();
+	@OneToMany(fetch = FetchType.EAGER,mappedBy = "patient")
+	private List<NotePatient> notes  = new ArrayList<>();
+	@OneToMany(fetch = FetchType.EAGER,mappedBy = "patient")
+	private List<Chat> chats  = new ArrayList<>();
 
 	
 	public void setListeRendezVous(List<RendezVous> listeRendezVous) {

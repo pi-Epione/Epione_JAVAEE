@@ -31,6 +31,8 @@ public class RendezVous implements Serializable{
 	private State state;
 	
 	
+
+	
 	@ManyToOne
 	private Patient patient ;
 	@ManyToOne
