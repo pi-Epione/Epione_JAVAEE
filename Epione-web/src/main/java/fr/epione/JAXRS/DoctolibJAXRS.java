@@ -62,6 +62,7 @@ public class DoctolibJAXRS {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response ajoutDemande(DemandeDoctolib demande){
 		int id = DS.ajoutDemande(demande) ; 
+		if(id==0) return Response.ok("demande existe").build();
 		return Response.ok(id).build();
 	}
 	
@@ -136,6 +137,8 @@ public class DoctolibJAXRS {
 		Date date = new Date();
 		d.setDateCreation(date);
 		d.setDoctolib(true);
+		d.setIsEnable(true);
+		d.setEmail(demande.getEmail());
 		int id = DS.addDoctor(d) ; 
 		int x = DS.deleteDemande(demande) ;
 		if(id==0) return Response.ok("Doctor already exist").build();
@@ -189,6 +192,17 @@ public class DoctolibJAXRS {
 		List<DemandeDoctolib> liste = DS.getDemandes();
 		GenericEntity<List<DemandeDoctolib>> entity = new GenericEntity<List<DemandeDoctolib>>(liste){};
 		return Response.ok(entity).build();
+
+	}
+	
+	@Path("DoctolibPercentage")
+	@GET
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response DoctolibPercentage() {
+		
+
+		double x = DS.DoctolibPercentage();
+		return Response.ok(x).build();
 
 	}
 	
